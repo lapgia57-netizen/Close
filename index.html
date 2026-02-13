@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ĐÓNG CỬA TẠM THỜI - Hẹn Gặp Lại!</title>
+  
+  <!-- Google Fonts cho font tiếng Việt đẹp -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet"/>
+  
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: fadeIn 1.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(30px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    h1 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(3.5rem, 12vw, 6rem);
+      margin: 0.1em 0;
+      color: #ff4757;
+      text-shadow: 0 4px 15px rgba(255,71,87,0.5);
+    }
+    .emoji {
+      font-size: clamp(4rem, 15vw, 7rem);
+      margin: 15px 0;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.08); }
+    }
+    p {
+      font-size: 1.4rem;
+      line-height: 1.6;
+      margin: 1.2em 0;
+      opacity: 0.95;
+    }
+    .time {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffd32a;
+      margin: 2em 0 1em;
+      padding: 12px 20px;
+      background: rgba(255,211,42,0.15);
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .highlight { color: #4fffa5; }
+    
+    .image-wrapper {
+      margin: 30px auto;
+      max-width: 320px;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      transition: all 0.4s ease;
+    }
+    .image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .image-wrapper:hover {
+      transform: translateY(-10px) scale(1.04);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    }
+    .image-wrapper:hover img {
+      transform: scale(1.08);
+    }
+    
+    .small {
+      font-size: 1.15rem;
+      opacity: 0.8;
+      margin-top: 2em;
+    }
+    
+    @media (max-width: 480px) {
+      .container { padding: 30px 20px; }
+      h1 { font-size: 4.5rem; }
+      .emoji { font-size: 5.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="emoji">🔒😴</div>
+  
+  <h1>ĐÓNG CỬA</h1>
+  
+  <p>Hiện tại quán đang tạm nghỉ.<br>
+  Mong các bạn thông cảm và hẹn gặp lại nha! ❤️🙏</p>
+
+  <!-- Chọn 1 trong các ảnh dưới đây bằng cách uncomment (xóa <!-- và -->) -->
+
+  <!-- Ảnh 1: Biển đóng cửa kiểu Việt Nam thực tế (rất phổ biến) -->
+  <div class="image-wrapper">
+    <img src="https://danviet.ex-cdn.com/files/f1/296231569849192448/2022/1/6/hang-quan-nghi-tet-som-9-16414466769831583671719-1641446803700729373906.jpeg" 
+         alt="Quán đóng cửa Việt Nam">
+  </div>
+
+  <!-- Ảnh 2: Cửa cuốn + bảng nghỉ vui (vibe "vợ đẻ con trai") -->
+  <!-- 
+  <div class="image-wrapper">
+    <img src="https://vnn-imgs-f.vgcloud.vn/2019/10/26/09/ban-hang-ba-dao-1.jpg?width=0&s=IHj6JGCx3UasCY2AkdpYIg" 
+         alt="Biển nghỉ bá đạo">
+  </div>
+  -->
+
+  <!-- Ảnh 3: Cửa cuốn xanh + thông báo tạm nghỉ (kiểu dịch bệnh) -->
+  <!-- 
+  <div class="image-wrapper">
+    <img src="https://image.plo.vn/w1000/Uploaded/2026/zaaekt/2020_03_25/tam-dong-cua-covid19_qoyh.jpg.webp" 
+         alt="Cửa cuốn tạm nghỉ">
+  </div>
+  -->
+
+  <!-- Ảnh 4: Mèo ngủ cute, vibe chill nghỉ ngơi -->
+  <!-- 
+  <div class="image-wrapper">
+    <img src="https://vihema.com/wp-content/uploads/2025/12/hinh-anh-ve-nhung-chu-meo-de-thuong-65d7f0.webp" 
+         alt="Mèo ngủ ngon lành">
+  </div>
+  -->
+
+  <div class="time">
+    Mở cửa lại: <span class="highlight">8:30 sáng mai</span> nhé!
+  </div>
+
+  <p class="small">Cảm ơn mọi người đã ghé qua!<br>
+  Yêu thương nhiều lắm ạ ~ 💕</p>
+</div>
+
+</body>
+</html>
