@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baccarat Game - Fixed Rules UI/UX</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Bootstrap for Real-World UI -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .database-url {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            margin-bottom: 20px;
+        }
+        .bet-section {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .bet-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 200px;
+            margin: 10px;
+        }
+        .bet-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        .bet-card.selected {
+            background: #ffd700;
+            color: #000;
+        }
+        .bet-card i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .result-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .card {
+            width: 60px;
+            height: 90px;
+            background: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .payout {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .history-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .history-table th, .history-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-deal {
+            background: #28a745;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-deal:hover {
+            background: #218838;
+        }
+        .btn-deal:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 2px;
+            margin-top: 20px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .road-cell {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+        }
+        .road-player { background: blue; }
+        .road-banker { background: red; }
+        .road-tie { background: green; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid game-container">
+        <div class="header">
+            <h1><i class="fas fa-dice"></i> Baccarat Royale - Fixed Rules</h1>
+            <div class="database-url">
+                <strong>Database URL:</strong> https://barcarataz-default-rtdb.firebaseio.com/
+            </div>
+        </div>
+
+        <div class="bet-section">
+            <div class="bet-card" onclick="selectBet('player')">
+                <i class="fas fa-user"></i>
+                <h3>Player</h3>
+                <p>1:1</p>
+            </div>
+            <div class="bet-card" onclick="selectBet('tie')">
+                <i class="fas fa-equals"></i>
+                <h3>Tie</h3>
+                <p>8:1</p>
+            </div>
+            <div class="bet-card" onclick="selectBet('banker')">
+                <i class="fas fa-crown"></i>
+                <h3>Banker</h3>
+                <p>1:0.95</p>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h2 id="currentBet">Chọn đặt cược</h2>
+            <button class="btn-deal" onclick="dealCards()" id="dealBtn" disabled>Deal Cards</button>
+            <div class="cards" id="cardsDisplay"></div>
+            <h3 id="result"></h3>
+            <div id="payout" class="payout" style="display: none;"></div>
+        </div>
+
+        <div class="history-section">
+            <h4><i class="fas fa-history"></i> Lịch Sử Ván Chơi</h4>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Ván</th>
+                        <th>Kết Quả</th>
+                        <th>Player Cards</th>
+                        <th>Banker Cards</th>
+                        <th>Payout (bet=100)</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTable"></tbody>
+            </table>
+            <div class="roadmap" id="roadmap"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            databaseURL: "https://barcarataz-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const gamesRef = db.ref('games');
+
+        let currentBet = null;
+        let gameHistory = [];
+        let gameCount = 0;
+        const betAmount = 100; // Demo bet amount
+
+        // Load history từ Firebase
+        gamesRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            gameHistory = data ? Object.values(data) : [];
+            gameCount = gameHistory.length;
+            updateHistoryTable();
+            updateRoadmap();
+        });
+
+        function selectBet(bet) {
+            currentBet = bet;
+            document.querySelectorAll('.bet-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.bet-card').classList.add('selected');
+            document.getElementById('currentBet').textContent = `Đặt cược: ${bet.charAt(0).toUpperCase() + bet.slice(1)} (Tỉ lệ chuẩn)`;
+            document.getElementById('dealBtn').disabled = false;
+        }
+
+        function cardValue(rank) {
+            if (['J', 'Q', 'K', '10'].includes(rank)) return 0;
+            return parseInt(rank) || 1;
+        }
+
+        function handTotal(cards) {
+            return cards.reduce((sum, c) => sum + cardValue(c.rank), 0) % 10;
+        }
+
+        function dealCards() {
+            if (!currentBet) return alert('Vui lòng chọn đặt cược!');
+            const dealBtn = document.getElementById('dealBtn');
+            dealBtn.disabled = true;
+            document.querySelectorAll('.bet-card').forEach(card => card.classList.add('disabled')); // Disable bets during deal
+
+            // Create deck (single for demo; uncomment *8 for multi-deck)
+            const suits = ['♠', '♥', '♦', '♣'];
+            const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+            let deck = [];
+            for (let s of suits) {
+                for (let r of ranks) {
+                    deck.push({ suit: s, rank: r });
+                    // deck.push({ suit: s, rank: r }); // *8 for 8 decks
+                }
+            }
+
+            // Shuffle
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+
+            // Alternate deal: P1, B1, P2, B2
+            const p1 = deck.pop();
+            const b1 = deck.pop();
+            const p2 = deck.pop();
+            const b2 = deck.pop();
+
+            let playerCards = [p1, p2];
+            let bankerCards = [b1, b2];
+
+            let playerTotal = handTotal(playerCards);
+            let bankerTotal = handTotal(bankerCards);
+
+            // Player third card rule
+            let playerThird = null;
+            if (playerTotal <= 5) {
+                playerThird = deck.pop();
+                playerCards.push(playerThird);
+                playerTotal = handTotal(playerCards);
+            }
+
+            // Banker third card rule
+            if (!playerThird) {
+                // Player stood (total 6-9)
+                if (bankerTotal <= 5) {
+                    const bankerThird = deck.pop();
+                    bankerCards.push(bankerThird);
+                    bankerTotal = handTotal(bankerCards);
+                }
+            } else {
+                // Player drew, check based on player third value
+                const ptcVal = cardValue(playerThird.rank);
+                let bankerDraw = false;
+                if (bankerTotal <= 2) {
+                    bankerDraw = true;
+                } else if (bankerTotal === 3) {
+                    bankerDraw = ptcVal !== 8;
+                } else if (bankerTotal === 4) {
+                    bankerDraw = ptcVal >= 2 && ptcVal <= 7;
+                } else if (bankerTotal === 5) {
+                    bankerDraw = ptcVal >= 4 && ptcVal <= 7;
+                } else if (bankerTotal === 6) {
+                    bankerDraw = ptcVal >= 6 && ptcVal <= 7;
+                }
+                if (bankerDraw) {
+                    const bankerThird = deck.pop();
+                    bankerCards.push(bankerThird);
+                    bankerTotal = handTotal(bankerCards);
+                }
+            }
+
+            // Determine winner
+            let winner = '';
+            if (playerTotal > bankerTotal) {
+                winner = 'player';
+            } else if (bankerTotal > playerTotal) {
+                winner = 'banker';
+            } else {
+                winner = 'tie';
+            }
+
+            // Display cards
+            const cardsDisplay = document.getElementById('cardsDisplay');
+            cardsDisplay.innerHTML = `
+                <div style="text-align: center;">
+                    <h4>Player: ${playerTotal}</h4>
+                    ${playerCards.map(c => `<div class="card">${c.rank}${c.suit}</div>`).join('')}
+                </div>
+                <div style="text-align: center;">
+                    <h4>Banker: ${bankerTotal}</h4>
+                    ${bankerCards.map(c => `<div class="card">${c.rank}${c.suit}</div>`).join('')}
+                </div>
+            `;
+
+            document.getElementById('result').textContent = `Kết quả: ${winner.toUpperCase()}!`;
+
+            // Calculate payout (demo bet=100)
+            let payout = 0;
+            let payoutText = `Bet: ${betAmount} on ${currentBet}. `;
+            if (winner === currentBet) {
+                if (currentBet === 'player') {
+                    payout = betAmount * 2; // 1:1 + principal
+                    payoutText += `Win: ${betAmount} (total ${payout})`;
+                } else if (currentBet === 'banker') {
+                    payout = Math.floor(betAmount * 1.95); // 1:0.95 + principal
+                    payoutText += `Win: ${betAmount * 0.95} (total ${payout})`;
+                } else { // tie
+                    payout = betAmount * 9; // 8:1 + principal
+                    payoutText += `Win: ${betAmount * 8} (total ${payout})`;
+                }
+            } else if (winner !== 'tie' && currentBet !== winner) {
+                payoutText += 'Lose: 0';
+            } else { // Tie bet lose? No, tie bet wins only on tie
+                payoutText += 'Lose: 0';
+            }
+            const payoutDiv = document.getElementById('payout');
+            payoutDiv.innerHTML = `<strong>${payoutText}</strong>`;
+            payoutDiv.style.display = 'block';
+
+            // Save to Firebase
+            const gameData = {
+                id: ++gameCount,
+                bet: currentBet,
+                winner: winner,
+                playerCards: playerCards.map(c => `${c.rank}${c.suit}`),
+                bankerCards: bankerCards.map(c => `${c.rank}${c.suit}`),
+                playerTotal: playerTotal,
+                bankerTotal: bankerTotal,
+                payout: payout,
+                timestamp: Date.now()
+            };
+            gamesRef.push(gameData);
+
+            // Reset
+            setTimeout(() => {
+                currentBet = null;
+                document.querySelectorAll('.bet-card').forEach(card => {
+                    card.classList.remove('selected', 'disabled');
+                });
+                document.getElementById('currentBet').textContent = 'Chọn đặt cược';
+                cardsDisplay.innerHTML = '';
+                document.getElementById('result').textContent = '';
+                payoutDiv.style.display = 'none';
+                dealBtn.disabled = true;
+            }, 5000); // Auto reset after 5s
+        }
+
+        function updateHistoryTable() {
+            const tbody = document.getElementById('historyTable');
+            tbody.innerHTML = gameHistory.slice(-10).reverse().map(game => `
+                <tr>
+                    <td>${game.id}</td>
+                    <td><span class="badge bg-${game.winner === 'player' ? 'primary' : game.winner === 'banker' ? 'danger' : 'success'}">${game.winner}</span></td>
+                    <td>${game.playerCards.join(', ')}</td>
+                    <td>${game.bankerCards.join(', ')}</td>
+                    <td>${game.payout || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateRoadmap() {
+            const roadmap = document.getElementById('roadmap');
+            roadmap.innerHTML = gameHistory.slice(-20).map(game => {
+                const className = `road-cell road-${game.winner}`;
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
