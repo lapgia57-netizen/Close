@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chấm Công - Xử Lý Gối Tháng Chuẩn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { background: #f8f9fc; font-family: system-ui, sans-serif; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.06); }
+        .header-gradient { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+        .night { background: #1e293b; color: white; }
+        .day { background: #3b82f6; color: white; }
+        .status-pill { padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 600; }
+        .table th { background: #e2e8f0; }
+        .goid-thang { background: #fef3c7; font-weight: 500; }
+        .month-picker { max-width: 180px; }
+        .total-box { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 12px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">Chấm Công Ca Trực 12 Tiếng</h1>
+        <p class="text-muted">Xử lý gối tháng chính xác • Firebase: <code>https://vlbaovework-default-rtdb.firebaseio.com/</code></p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Trạng thái hiện tại -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header header-gradient text-center py-4">
+                    <h4 class="mb-0">Trạng Thái Hiện Tại</h4>
+                </div>
+                <div class="card-body text-center pt-4">
+                    <div id="currentStatus" class="status-pill bg-light text-dark mb-4 fs-5">Chưa chấm công hôm nay</div>
+                    <div class="d-grid gap-3">
+                        <button id="btnCheckIn" class="btn btn-success btn-lg"><i class="fas fa-sign-in-alt me-2"></i>Check-In</button>
+                        <button id="btnCheckOut" class="btn btn-danger btn-lg" disabled><i class="fas fa-sign-out-alt me-2"></i>Check-Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nhập thủ công -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header header-gradient"><h4 class="mb-0">Nhập Ca Thủ Công</h4></div>
+                <div class="card-body">
+                    <form id="manualEntryForm" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Ngày bắt đầu ca</label>
+                            <input type="date" id="inpDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Giờ vào</label>
+                            <input type="time" id="inpIn" class="form-control" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Giờ ra</label>
+                            <input type="time" id="inpOut" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Loại ca</label>
+                            <select id="selShift" class="form-select">
+                                <option value="day">Ca Ngày</option>
+                                <option value="night">Ca Đêm (18h → 6h)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save"></i> Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng chấm công theo tháng -->
+    <div class="card mt-4">
+        <div class="card-header header-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Chấm Công Theo Tháng</h4>
+            <div class="d-flex align-items-center gap-3">
+                <input type="month" id="monthPicker" class="form-control month-picker">
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="total-box text-center p-4">
+                        <h5 class="mb-1">Tổng giờ tháng</h5>
+                        <h2 id="totalHours" class="mb-0">0.00</h2>
+                        <small>giờ</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="total-box text-center p-4">
+                        <h5 class="mb-1">Tổng tiền tháng</h5>
+                        <h2 id="totalSalary" class="mb-0">0</h2>
+                        <small>VND (20.000/giờ)</small>
+                    </div>
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Ngày thuộc</th>
+                                    <th>Loại ca</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Giờ tháng này</th>
+                                    <th>Giờ tháng khác</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = { databaseURL: "https://vlbaovework-default-rtdb.firebaseio.com/" };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const userId = "user1"; // ← thay bằng auth nếu triển khai thực tế
+    const attendanceRef = ref(db, `attendance/${userId}/entries`);
+
+    let currentCheckIn = null;
+    let currentShift = null;
+    let allRecords = {};
+
+    const HOURLY_RATE = 20000; // VND/giờ
+
+    // ────────────────────────────────────────────────
+    // Format helpers
+    // ────────────────────────────────────────────────
+    function fmtDate(ts, withTime = false) {
+        if (!ts) return '—';
+        const d = new Date(ts);
+        let s = d.toLocaleDateString('vi-VN');
+        if (withTime) s += ' ' + d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+        return s;
+    }
+
+    function fmtHours(h) { return h ? Number(h).toFixed(2) : '0.00'; }
+
+    function fmtCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount).replace('₫', '').trim();
+    }
+
+    function badgeShift(type) {
+        return type === 'night'
+            ? '<span class="badge night px-3 py-2">Ca Đêm</span>'
+            : '<span class="badge day px-3 py-2">Ca Ngày</span>';
+    }
+
+    // ────────────────────────────────────────────────
+    // Tính giờ tách theo tháng (cải tiến xử lý null)
+    // ────────────────────────────────────────────────
+    function splitHoursByMonth(entry, targetMonth) {
+        if (!entry.checkIn || !entry.checkOut) {
+            return { thisMonth: 0, otherMonth: 0, note: '' };
+        }
+
+        const cin  = new Date(entry.checkIn);
+        let cout = new Date(entry.checkOut);
+
+        // Ca đêm cùng ngày → +1 ngày
+        if (cout < cin && cout.toDateString() === cin.toDateString()) {
+            cout.setDate(cout.getDate() + 1);
+        }
+
+        const ms = cout - cin;
+        if (ms <= 0) return { thisMonth: 0, otherMonth: 0, note: '' };
+
+        const totalH = ms / 3600000;
+
+        const monthIn  = `${cin.getFullYear()}-${String(cin.getMonth()+1).padStart(2,'0')}`;
+        const monthOut = `${cout.getFullYear()}-${String(cout.getMonth()+1).padStart(2,'0')}`;
+
+        if (monthIn === monthOut) {
+            return monthIn === targetMonth
+                ? { thisMonth: totalH, otherMonth: 0, note: '' }
+                : { thisMonth: 0, otherMonth: totalH, note: '' };
+        }
+
+        // Gối tháng
+        const endInMonth = new Date(cin.getFullYear(), cin.getMonth() + 1, 0, 23, 59, 59, 999);
+        const hInMonth   = (endInMonth - cin) / 3600000;
+        const hNextMonth = (cout - (endInMonth.getTime() + 1)) / 3600000;
+
+        if (monthIn === targetMonth) return { thisMonth: hInMonth, otherMonth: hNextMonth, note: 'gối sang tháng sau' };
+        if (monthOut === targetMonth) return { thisMonth: hNextMonth, otherMonth: hInMonth, note: 'gối từ tháng trước' };
+
+        return { thisMonth: 0, otherMonth: totalH, note: '' };
+    }
+
+    // ────────────────────────────────────────────────
+    // Render bảng - sắp xếp theo checkIn giảm dần để đối chiếu giờ ra/vào
+    // ────────────────────────────────────────────────
+    function renderTableForMonth(targetMonth) {
+        const tbody = document.querySelector('#attendanceTable tbody');
+        tbody.innerHTML = '';
+
+        let totalThisMonth = 0;
+
+        // Chuyển object → array + sort giảm dần theo checkIn
+        const sorted = Object.entries(allRecords)
+            .filter(([_, e]) => e.checkIn)
+            .sort(([,a], [,b]) => (b.checkIn || 0) - (a.checkIn || 0));
+
+        sorted.forEach(([id, entry]) => {
+            const calc = splitHoursByMonth(entry, targetMonth);
+            if (calc.thisMonth <= 0 && calc.otherMonth <= 0) return;
+
+            totalThisMonth += calc.thisMonth;
+
+            const rowClass = calc.note ? 'goid-thang' : '';
+
+            const tr = document.createElement('tr');
+            tr.className = rowClass;
+            tr.innerHTML = `
+                <td>${fmtDate(entry.checkIn)}</td>
+                <td>${badgeShift(entry.shiftType || 'day')}</td>
+                <td>${fmtDate(entry.checkIn, true)}</td>
+                <td>${entry.checkOut ? fmtDate(entry.checkOut, true) : '<span class="text-warning">Đang làm</span>'}</td>
+                <td class="fw-bold">${fmtHours(calc.thisMonth)}</td>
+                <td>${fmtHours(calc.otherMonth)} ${calc.note ? `<small class="text-muted">(${calc.note})</small>` : ''}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary edit-record" data-id="${id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger delete-record" data-id="${id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('totalHours').textContent = fmtHours(totalThisMonth);
+        document.getElementById('totalSalary').textContent = fmtCurrency(totalThisMonth * HOURLY_RATE);
+    }
+
+    // ────────────────────────────────────────────────
+    // Realtime listener
+    // ────────────────────────────────────────────────
+    onValue(attendanceRef, snap => {
+        allRecords = snap.val() || {};
+        const picker = document.getElementById('monthPicker');
+        if (!picker.value) {
+            const now = new Date();
+            picker.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        }
+        renderTableForMonth(picker.value);
+        updateLiveStatus();
+    });
+
+    async function updateLiveStatus() {
+        const snap = await get(attendanceRef);
+        if (!snap.exists()) return resetStatus();
+
+        const entries = Object.values(snap.val() || {}).filter(e => e.checkIn);
+        if (!entries.length) return resetStatus();
+
+        // Lấy ca mới nhất (dựa trên checkIn)
+        const latest = entries.sort((a,b) => b.checkIn - a.checkIn)[0];
+
+        if (!latest.checkOut) {
+            currentCheckIn = latest.checkIn;
+            currentShift = latest.shiftType || 'day';
+            const txt = currentShift === 'night' ? 'Ca Đêm' : 'Ca Ngày';
+            const cls = currentShift === 'night' ? 'night' : 'bg-success';
+            document.getElementById('currentStatus').innerHTML = 
+                `<span class="status-pill ${cls} text-white">Đang làm (${txt}) từ ${fmtDate(currentCheckIn, true)}</span>`;
+            document.getElementById('btnCheckIn').disabled = true;
+            document.getElementById('btnCheckOut').disabled = false;
+        } else {
+            resetStatus();
+        }
+    }
+
+    function resetStatus() {
+        currentCheckIn = currentShift = null;
+        document.getElementById('currentStatus').innerHTML = 'Chưa chấm công hôm nay';
+        document.getElementById('btnCheckIn').disabled = false;
+        document.getElementById('btnCheckOut').disabled = true;
+    }
+
+    // ────────────────────────────────────────────────
+    // Check-in
+    // ────────────────────────────────────────────────
+    document.getElementById('btnCheckIn').onclick = async () => {
+        const choice = prompt("Loại ca:\n1 = Ca Ngày\n2 = Ca Đêm", "1");
+        const type = (choice === "2") ? "night" : "day";
+
+        const now = Date.now();
+        const newRef = push(attendanceRef);
+        await set(newRef, { checkIn: now, shiftType: type });
+        alert(`Check-in thành công (${type === 'night' ? 'Ca Đêm' : 'Ca Ngày'})`);
+    };
+
+    // ────────────────────────────────────────────────
+    // Check-out (tìm ca đang mở mới nhất)
+    // ────────────────────────────────────────────────
+    document.getElementById('btnCheckOut').onclick = async () => {
+        if (!currentCheckIn) return alert('Không có ca đang mở');
+
+        const snap = await get(attendanceRef);
+        const entries = snap.val() || {};
+
+        const openKeys = Object.keys(entries)
+            .filter(k => entries[k].checkIn && !entries[k].checkOut)
+            .sort((a,b) => entries[b].checkIn - entries[a].checkIn);
+
+        if (!openKeys.length) return alert('Không tìm thấy ca đang mở');
+
+        const keyToUpdate = openKeys[0]; // mới nhất
+        const now = Date.now();
+
+        await update(ref(db, `attendance/${userId}/entries/${keyToUpdate}`), { checkOut: now });
+        alert('Check-out thành công!');
+    };
+
+    // ────────────────────────────────────────────────
+    // Nhập thủ công
+    // ────────────────────────────────────────────────
+    document.getElementById('manualEntryForm').onsubmit = async e => {
+        e.preventDefault();
+        const date   = document.getElementById('inpDate').value;
+        const inStr  = document.getElementById('inpIn').value;
+        let   outStr = document.getElementById('inpOut').value;
+        const type   = document.getElementById('selShift').value;
+
+        if (!date || !inStr) return alert('Vui lòng nhập ngày & giờ vào');
+
+        const cin = new Date(`${date}T${inStr}:00`).getTime();
+        let cout = null;
+        if (outStr) {
+            cout = new Date(`${date}T${outStr}:00`).getTime();
+            if (cout < cin) cout += 24*60*60*1000;
+        }
+
+        const refNew = push(attendanceRef);
+        await set(refNew, {
+            checkIn: cin,
+            ...(cout && { checkOut: cout }),
+            shiftType: type
+        });
+
+        alert('Đã lưu ca thủ công');
+        e.target.reset();
+    };
+
+    // ────────────────────────────────────────────────
+    // Xóa & Sửa (update) bản ghi
+    // ────────────────────────────────────────────────
+    document.addEventListener('click', async e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (!id) return;
+
+        if (btn.classList.contains('delete-record')) {
+            if (!confirm('Xác nhận xóa ca này?')) return;
+            await remove(ref(db, `attendance/${userId}/entries/${id}`));
+            alert('Đã xóa');
+        }
+
+        else if (btn.classList.contains('edit-record')) {
+            const entry = allRecords[id];
+            if (!entry) return alert('Không tìm thấy bản ghi');
+
+            const cin = new Date(entry.checkIn);
+            const dateStr = cin.toISOString().slice(0,10);
+            const timeIn  = cin.toTimeString().slice(0,5);
+
+            let timeOut = '';
+            if (entry.checkOut) {
+                const cout = new Date(entry.checkOut);
+                timeOut = cout.toTimeString().slice(0,5);
+            }
+
+            const newDate = prompt('Ngày (YYYY-MM-DD):', dateStr);
+            const newIn   = prompt('Giờ vào (HH:MM):', timeIn);
+            const newOut  = prompt('Giờ ra (HH:MM) - để trống nếu chưa ra:', timeOut);
+            const newType = prompt('Loại ca (day / night):', entry.shiftType || 'day');
+
+            if (!newDate || !newIn) return alert('Đã hủy chỉnh sửa');
+
+            try {
+                const newCin = new Date(`${newDate}T${newIn}:00`).getTime();
+                let newCout = null;
+                if (newOut.trim()) {
+                    newCout = new Date(`${newDate}T${newOut}:00`).getTime();
+                    if (newCout < newCin) newCout += 24*60*60*1000;
+                }
+
+                await update(ref(db, `attendance/${userId}/entries/${id}`), {
+                    checkIn: newCin,
+                    ...(newCout !== null ? { checkOut: newCout } : { checkOut: null }),
+                    shiftType: newType === 'night' ? 'night' : 'day'
+                });
+
+                alert('Đã cập nhật bản ghi');
+            } catch (err) {
+                alert('Lỗi định dạng thời gian:\n' + err.message);
+            }
+        }
+    });
+
+    document.getElementById('monthPicker').onchange = e => {
+        renderTableForMonth(e.target.value);
+    };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
