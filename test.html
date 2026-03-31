@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chấm Công - Xử Lý Gối Tháng Chuẩn</title>
+    <title>Chấm Công - Ca Trực Cố Định</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -15,7 +15,7 @@
         .status-pill { padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 600; }
         .table th { background: #e2e8f0; }
         .goid-thang { background: #fef3c7; font-weight: 500; }
-        .month-picker { max-width: 180px; }
+        .quick-btn { font-size: 0.95rem; padding: 0.65rem 1rem; }
         .total-box { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 12px; }
     </style>
 </head>
@@ -24,7 +24,7 @@
 <div class="container py-5">
     <div class="text-center mb-5">
         <h1 class="fw-bold text-primary">Chấm Công Ca Trực 12 Tiếng</h1>
-        <p class="text-muted">Xử lý gối tháng chính xác • Firebase: <code>https://vlbaovework-default-rtdb.firebaseio.com/</code></p>
+        <p class="text-muted">Xử lý gối tháng • Firebase: <code>https://vlbaovework-default-rtdb.firebaseio.com/</code></p>
     </div>
 
     <div class="row g-4">
@@ -44,15 +44,49 @@
             </div>
         </div>
 
-        <!-- Nhập thủ công -->
+        <!-- Nhập ca thủ công + Ca cố định -->
         <div class="col-lg-8">
             <div class="card">
-                <div class="card-header header-gradient"><h4 class="mb-0">Nhập Ca Thủ Công</h4></div>
+                <div class="card-header header-gradient d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Nhập Ca Thủ Công</h4>
+                    <small class="text-white">Giờ theo múi giờ Việt Nam (GMT+7)</small>
+                </div>
                 <div class="card-body">
+                    <!-- Nút chọn ca nhanh -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-primary">Chọn ca cố định nhanh:</label>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <button type="button" class="btn btn-outline-primary w-100 quick-btn" data-shift="morning">
+                                    <i class="fas fa-sun me-1"></i><br>Tăng cường sáng<br><small>6:30 - 12:30</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button type="button" class="btn btn-outline-primary w-100 quick-btn" data-shift="afternoon">
+                                    <i class="fas fa-cloud-sun me-1"></i><br>Tăng cường trưa<br><small>12:30 - 18:30</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button type="button" class="btn btn-outline-success w-100 quick-btn" data-shift="fullday">
+                                    <i class="fas fa-sun me-1"></i><br>Ca Ngày<br><small>6:30 - 18:30</small>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button type="button" class="btn btn-outline-dark w-100 quick-btn" data-shift="night">
+                                    <i class="fas fa-moon me-1"></i><br>Ca Đêm<br><small>18:30 - 6:30</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <form id="manualEntryForm" class="row g-3">
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Ngày bắt đầu ca</label>
-                            <input type="date" id="inpDate" class="form-control" required>
+                            <label class="form-label fw-bold">Ngày ca</label>
+                            <div class="input-group">
+                                <input type="date" id="inpDate" class="form-control" required>
+                                <button type="button" id="btnToday" class="btn btn-outline-secondary">Hôm nay</button>
+                                <button type="button" id="btnTomorrow" class="btn btn-outline-secondary">Ngày mai</button>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-bold">Giờ vào</label>
@@ -66,7 +100,7 @@
                             <label class="form-label fw-bold">Loại ca</label>
                             <select id="selShift" class="form-select">
                                 <option value="day">Ca Ngày</option>
-                                <option value="night">Ca Đêm (18h → 6h)</option>
+                                <option value="night">Ca Đêm</option>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
@@ -82,9 +116,7 @@
     <div class="card mt-4">
         <div class="card-header header-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Chấm Công Theo Tháng</h4>
-            <div class="d-flex align-items-center gap-3">
-                <input type="month" id="monthPicker" class="form-control month-picker">
-            </div>
+            <input type="month" id="monthPicker" class="form-control month-picker" style="max-width: 180px;">
         </div>
         <div class="card-body">
             <div class="row g-4 mb-4">
@@ -102,7 +134,6 @@
                         <small>VND (20.000/giờ)</small>
                     </div>
                 </div>
-                <div class="col-md-4"></div>
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle" id="attendanceTable">
@@ -135,18 +166,16 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const userId = "user1"; // ← thay bằng auth nếu triển khai thực tế
+    const userId = "user1";
     const attendanceRef = ref(db, `attendance/${userId}/entries`);
 
     let currentCheckIn = null;
     let currentShift = null;
     let allRecords = {};
 
-    const HOURLY_RATE = 20000; // VND/giờ
+    const HOURLY_RATE = 20000;
 
-    // ────────────────────────────────────────────────
-    // Format helpers
-    // ────────────────────────────────────────────────
+    // ====================== FORMAT HELPERS ======================
     function fmtDate(ts, withTime = false) {
         if (!ts) return '—';
         const d = new Date(ts);
@@ -167,18 +196,13 @@
             : '<span class="badge day px-3 py-2">Ca Ngày</span>';
     }
 
-    // ────────────────────────────────────────────────
-    // Tính giờ tách theo tháng (cải tiến xử lý null)
-    // ────────────────────────────────────────────────
+    // ====================== TÍNH GIỜ GỐI THÁNG ======================
     function splitHoursByMonth(entry, targetMonth) {
-        if (!entry.checkIn || !entry.checkOut) {
-            return { thisMonth: 0, otherMonth: 0, note: '' };
-        }
+        if (!entry.checkIn || !entry.checkOut) return { thisMonth: 0, otherMonth: 0, note: '' };
 
-        const cin  = new Date(entry.checkIn);
+        let cin = new Date(entry.checkIn);
         let cout = new Date(entry.checkOut);
 
-        // Ca đêm cùng ngày → +1 ngày
         if (cout < cin && cout.toDateString() === cin.toDateString()) {
             cout.setDate(cout.getDate() + 1);
         }
@@ -187,19 +211,17 @@
         if (ms <= 0) return { thisMonth: 0, otherMonth: 0, note: '' };
 
         const totalH = ms / 3600000;
-
-        const monthIn  = `${cin.getFullYear()}-${String(cin.getMonth()+1).padStart(2,'0')}`;
+        const monthIn = `${cin.getFullYear()}-${String(cin.getMonth()+1).padStart(2,'0')}`;
         const monthOut = `${cout.getFullYear()}-${String(cout.getMonth()+1).padStart(2,'0')}`;
 
         if (monthIn === monthOut) {
-            return monthIn === targetMonth
+            return monthIn === targetMonth 
                 ? { thisMonth: totalH, otherMonth: 0, note: '' }
                 : { thisMonth: 0, otherMonth: totalH, note: '' };
         }
 
-        // Gối tháng
         const endInMonth = new Date(cin.getFullYear(), cin.getMonth() + 1, 0, 23, 59, 59, 999);
-        const hInMonth   = (endInMonth - cin) / 3600000;
+        const hInMonth = (endInMonth - cin) / 3600000;
         const hNextMonth = (cout - (endInMonth.getTime() + 1)) / 3600000;
 
         if (monthIn === targetMonth) return { thisMonth: hInMonth, otherMonth: hNextMonth, note: 'gối sang tháng sau' };
@@ -208,16 +230,13 @@
         return { thisMonth: 0, otherMonth: totalH, note: '' };
     }
 
-    // ────────────────────────────────────────────────
-    // Render bảng - sắp xếp theo checkIn giảm dần để đối chiếu giờ ra/vào
-    // ────────────────────────────────────────────────
+    // ====================== RENDER BẢNG ======================
     function renderTableForMonth(targetMonth) {
         const tbody = document.querySelector('#attendanceTable tbody');
         tbody.innerHTML = '';
 
         let totalThisMonth = 0;
 
-        // Chuyển object → array + sort giảm dần theo checkIn
         const sorted = Object.entries(allRecords)
             .filter(([_, e]) => e.checkIn)
             .sort(([,a], [,b]) => (b.checkIn || 0) - (a.checkIn || 0));
@@ -228,10 +247,8 @@
 
             totalThisMonth += calc.thisMonth;
 
-            const rowClass = calc.note ? 'goid-thang' : '';
-
             const tr = document.createElement('tr');
-            tr.className = rowClass;
+            tr.className = calc.note ? 'goid-thang' : '';
             tr.innerHTML = `
                 <td>${fmtDate(entry.checkIn)}</td>
                 <td>${badgeShift(entry.shiftType || 'day')}</td>
@@ -241,12 +258,8 @@
                 <td>${fmtHours(calc.otherMonth)} ${calc.note ? `<small class="text-muted">(${calc.note})</small>` : ''}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary edit-record" data-id="${id}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-outline-danger delete-record" data-id="${id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <button class="btn btn-outline-primary edit-record" data-id="${id}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-outline-danger delete-record" data-id="${id}"><i class="fas fa-trash"></i></button>
                     </div>
                 </td>
             `;
@@ -257,9 +270,7 @@
         document.getElementById('totalSalary').textContent = fmtCurrency(totalThisMonth * HOURLY_RATE);
     }
 
-    // ────────────────────────────────────────────────
-    // Realtime listener
-    // ────────────────────────────────────────────────
+    // ====================== REALTIME ======================
     onValue(attendanceRef, snap => {
         allRecords = snap.val() || {};
         const picker = document.getElementById('monthPicker');
@@ -273,12 +284,9 @@
 
     async function updateLiveStatus() {
         const snap = await get(attendanceRef);
-        if (!snap.exists()) return resetStatus();
-
         const entries = Object.values(snap.val() || {}).filter(e => e.checkIn);
         if (!entries.length) return resetStatus();
 
-        // Lấy ca mới nhất (dựa trên checkIn)
         const latest = entries.sort((a,b) => b.checkIn - a.checkIn)[0];
 
         if (!latest.checkOut) {
@@ -297,14 +305,12 @@
 
     function resetStatus() {
         currentCheckIn = currentShift = null;
-        document.getElementById('currentStatus').innerHTML = 'Chưa chấm công hôm nay';
+        document.getElementById('currentStatus').textContent = 'Chưa chấm công hôm nay';
         document.getElementById('btnCheckIn').disabled = false;
         document.getElementById('btnCheckOut').disabled = true;
     }
 
-    // ────────────────────────────────────────────────
-    // Check-in
-    // ────────────────────────────────────────────────
+    // ====================== CHECK-IN ======================
     document.getElementById('btnCheckIn').onclick = async () => {
         const choice = prompt("Loại ca:\n1 = Ca Ngày\n2 = Ca Đêm", "1");
         const type = (choice === "2") ? "night" : "day";
@@ -315,33 +321,76 @@
         alert(`Check-in thành công (${type === 'night' ? 'Ca Đêm' : 'Ca Ngày'})`);
     };
 
-    // ────────────────────────────────────────────────
-    // Check-out (tìm ca đang mở mới nhất)
-    // ────────────────────────────────────────────────
     document.getElementById('btnCheckOut').onclick = async () => {
         if (!currentCheckIn) return alert('Không có ca đang mở');
 
         const snap = await get(attendanceRef);
         const entries = snap.val() || {};
-
         const openKeys = Object.keys(entries)
             .filter(k => entries[k].checkIn && !entries[k].checkOut)
             .sort((a,b) => entries[b].checkIn - entries[a].checkIn);
 
         if (!openKeys.length) return alert('Không tìm thấy ca đang mở');
 
-        const keyToUpdate = openKeys[0]; // mới nhất
-        const now = Date.now();
-
-        await update(ref(db, `attendance/${userId}/entries/${keyToUpdate}`), { checkOut: now });
+        const keyToUpdate = openKeys[0];
+        await update(ref(db, `attendance/${userId}/entries/${keyToUpdate}`), { checkOut: Date.now() });
         alert('Check-out thành công!');
     };
 
-    // ────────────────────────────────────────────────
-    // Nhập thủ công
-    // ────────────────────────────────────────────────
+    // ====================== CA CỐ ĐỊNH NHANH ======================
+    function applyQuickShift(shiftType) {
+        const now = new Date();
+        const todayStr = now.toISOString().slice(0,10);
+
+        document.getElementById('inpDate').value = todayStr;
+
+        switch(shiftType) {
+            case 'morning':     // Tăng cường sáng
+                document.getElementById('inpIn').value = '06:30';
+                document.getElementById('inpOut').value = '12:30';
+                document.getElementById('selShift').value = 'day';
+                break;
+            case 'afternoon':   // Tăng cường trưa
+                document.getElementById('inpIn').value = '12:30';
+                document.getElementById('inpOut').value = '18:30';
+                document.getElementById('selShift').value = 'day';
+                break;
+            case 'fullday':     // Ca Ngày
+                document.getElementById('inpIn').value = '06:30';
+                document.getElementById('inpOut').value = '18:30';
+                document.getElementById('selShift').value = 'day';
+                break;
+            case 'night':       // Ca Đêm
+                document.getElementById('inpIn').value = '18:30';
+                document.getElementById('inpOut').value = '06:30';
+                document.getElementById('selShift').value = 'night';
+                break;
+        }
+    }
+
+    // Gán sự kiện cho các nút ca cố định
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            applyQuickShift(btn.dataset.shift);
+        });
+    });
+
+    // ====================== NÚT HÔM NAY / NGÀY MAI ======================
+    document.getElementById('btnToday').onclick = () => {
+        const today = new Date().toISOString().slice(0,10);
+        document.getElementById('inpDate').value = today;
+    };
+
+    document.getElementById('btnTomorrow').onclick = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('inpDate').value = tomorrow.toISOString().slice(0,10);
+    };
+
+    // ====================== NHẬP THỦ CÔNG ======================
     document.getElementById('manualEntryForm').onsubmit = async e => {
         e.preventDefault();
+
         const date   = document.getElementById('inpDate').value;
         const inStr  = document.getElementById('inpIn').value;
         let   outStr = document.getElementById('inpOut').value;
@@ -351,9 +400,10 @@
 
         const cin = new Date(`${date}T${inStr}:00`).getTime();
         let cout = null;
+
         if (outStr) {
             cout = new Date(`${date}T${outStr}:00`).getTime();
-            if (cout < cin) cout += 24*60*60*1000;
+            if (cout < cin) cout += 24 * 60 * 60 * 1000; // sang ngày hôm sau
         }
 
         const refNew = push(attendanceRef);
@@ -363,13 +413,11 @@
             shiftType: type
         });
 
-        alert('Đã lưu ca thủ công');
+        alert('Đã lưu ca thủ công thành công!');
         e.target.reset();
     };
 
-    // ────────────────────────────────────────────────
-    // Xóa & Sửa (update) bản ghi
-    // ────────────────────────────────────────────────
+    // ====================== SỬA / XÓA ======================
     document.addEventListener('click', async e => {
         const btn = e.target.closest('button');
         if (!btn) return;
@@ -379,34 +427,29 @@
         if (btn.classList.contains('delete-record')) {
             if (!confirm('Xác nhận xóa ca này?')) return;
             await remove(ref(db, `attendance/${userId}/entries/${id}`));
-            alert('Đã xóa');
+            alert('Đã xóa bản ghi');
         }
-
         else if (btn.classList.contains('edit-record')) {
+            // (giữ nguyên logic sửa như cũ)
             const entry = allRecords[id];
-            if (!entry) return alert('Không tìm thấy bản ghi');
+            if (!entry) return;
 
             const cin = new Date(entry.checkIn);
             const dateStr = cin.toISOString().slice(0,10);
-            const timeIn  = cin.toTimeString().slice(0,5);
-
-            let timeOut = '';
-            if (entry.checkOut) {
-                const cout = new Date(entry.checkOut);
-                timeOut = cout.toTimeString().slice(0,5);
-            }
+            const timeIn = cin.toTimeString().slice(0,5);
+            let timeOut = entry.checkOut ? new Date(entry.checkOut).toTimeString().slice(0,5) : '';
 
             const newDate = prompt('Ngày (YYYY-MM-DD):', dateStr);
-            const newIn   = prompt('Giờ vào (HH:MM):', timeIn);
-            const newOut  = prompt('Giờ ra (HH:MM) - để trống nếu chưa ra:', timeOut);
+            const newIn = prompt('Giờ vào (HH:MM):', timeIn);
+            const newOut = prompt('Giờ ra (HH:MM) - để trống nếu chưa ra:', timeOut);
             const newType = prompt('Loại ca (day / night):', entry.shiftType || 'day');
 
-            if (!newDate || !newIn) return alert('Đã hủy chỉnh sửa');
+            if (!newDate || !newIn) return;
 
             try {
                 const newCin = new Date(`${newDate}T${newIn}:00`).getTime();
                 let newCout = null;
-                if (newOut.trim()) {
+                if (newOut && newOut.trim()) {
                     newCout = new Date(`${newDate}T${newOut}:00`).getTime();
                     if (newCout < newCin) newCout += 24*60*60*1000;
                 }
@@ -416,19 +459,18 @@
                     ...(newCout !== null ? { checkOut: newCout } : { checkOut: null }),
                     shiftType: newType === 'night' ? 'night' : 'day'
                 });
-
-                alert('Đã cập nhật bản ghi');
+                alert('Cập nhật thành công');
             } catch (err) {
-                alert('Lỗi định dạng thời gian:\n' + err.message);
+                alert('Lỗi: ' + err.message);
             }
         }
     });
 
-    document.getElementById('monthPicker').onchange = e => {
-        renderTableForMonth(e.target.value);
-    };
+    document.getElementById('monthPicker').onchange = e => renderTableForMonth(e.target.value);
 </script>
 
+
+    
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
