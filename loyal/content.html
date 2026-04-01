@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>IQ 920 | Mật mã tình yêu & Chuyển đổi số sang chữ</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: background 0.3s ease, color 0.2s ease;
+        }
+
+        .app-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.02);
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* Header */
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .iq-badge {
+            font-family: 'Space Grotesk', monospace;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e2b3c, #0f212f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .number-raw {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e4e;
+            background: #eef2f9;
+            padding: 0.2rem 0.9rem;
+            border-radius: 60px;
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.8rem;
+            background: #ffffffcc;
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            color: #4a5b6e;
+        }
+
+        .theme-btn.active {
+            background: #2c3e50;
+            color: white;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+        }
+
+        .theme-btn:hover:not(.active) {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        /* Main content - 2 cột trên desktop */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Left panel: converter */
+        .converter-card {
+            background: rgba(255,255,255,0.6);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+            transition: background 0.2s;
+        }
+
+        .visual-hero {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .prefix-display {
+            font-size: 2.8rem;
+            font-weight: 800;
+            font-family: 'Space Grotesk', monospace;
+            background: linear-gradient(120deg, #1f2f3a, #2b4b62);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .word-result {
+            margin-top: 0.5rem;
+            font-size: 1.4rem;
+            font-weight: 500;
+            background: #f0f4fa;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 60px;
+            color: #1e2f3c;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.2rem 0 1rem;
+        }
+
+        .input-field {
+            flex: 2;
+            min-width: 150px;
+        }
+
+        .input-field label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #4a6272;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background: white;
+            border: 1px solid #cfdfed;
+            border-radius: 2rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .btn-action {
+            background: #1f3e4c;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            margin-top: 1.2rem;
+        }
+
+        /* Right panel: nội dung ý nghĩa */
+        .meaning-card {
+            background: rgba(255,255,255,0.6);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-left: 4px solid #e67e22;
+            padding-left: 0.8rem;
+        }
+
+        .meaning-content p {
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .phonetic-box {
+            background: rgba(0,0,0,0.03);
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        .code-list {
+            list-style: none;
+            margin-top: 0.8rem;
+        }
+
+        .code-list li {
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .badge-info {
+            background: #eef2fa;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .ref-link {
+            font-size: 0.7rem;
+            color: #6c86a3;
+            margin-top: 1rem;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 0.8rem;
+        }
+
+        /* Themes */
+        body.theme-dark {
+            background: linear-gradient(145deg, #11181c, #0b1114);
+        }
+        body.theme-dark .app-container {
+            background: rgba(20, 28, 32, 0.9);
+            border-color: rgba(255,255,255,0.1);
+        }
+        body.theme-dark .theme-header, body.theme-dark .converter-card, body.theme-dark .meaning-card {
+            background: rgba(30,40,45,0.7);
+        }
+        body.theme-dark .iq-badge {
+            background: linear-gradient(135deg, #b3e4ff, #7fc9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        body.theme-dark .word-result {
+            background: #1e2c34;
+            color: #ddf4ff;
+        }
+        body.theme-dark .input-field input {
+            background: #1e2a30;
+            border-color: #3c525e;
+            color: #eef4fc;
+        }
+        body.theme-dark .section-title {
+            color: #cfe6ff;
+        }
+        body.theme-dark .phonetic-box {
+            background: #1f2f38;
+        }
+
+        body.theme-pastel {
+            background: linear-gradient(145deg, #f9efe2, #f3e5d2);
+        }
+        body.theme-pastel .app-container {
+            background: #fffaf5e6;
+        }
+        body.theme-pastel .iq-badge {
+            background: linear-gradient(135deg, #b8735a, #a55d46);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        body.theme-pastel .btn-action {
+            background: #c38266;
+        }
+
+        body.theme-forest {
+            background: linear-gradient(145deg, #cfebd9, #bcddca);
+        }
+        body.theme-forest .btn-action {
+            background: #2d6a4f;
+        }
+
+        footer {
+            padding: 0.8rem 2rem 1.2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6a7f8f;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="theme-header">
+        <div class="brand">
+            <span class="iq-badge">IQ</span>
+            <span class="number-raw">920</span>
+        </div>
+        <div class="theme-selector" id="themeSelector">
+            <button data-theme="default" class="theme-btn active" title="Sáng"><i class="fas fa-sun"></i></button>
+            <button data-theme="dark" class="theme-btn" title="Tối"><i class="fas fa-moon"></i></button>
+            <button data-theme="pastel" class="theme-btn" title="Pastel"><i class="fas fa-palette"></i></button>
+            <button data-theme="forest" class="theme-btn" title="Rừng xanh"><i class="fas fa-tree"></i></button>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- Cột trái: Chuyển đổi số -->
+        <div class="converter-card">
+            <div class="visual-hero">
+                <div class="prefix-display" id="iqPreview">IQ 920</div>
+                <div class="word-result" id="wordDisplay">chín trăm hai mươi</div>
+            </div>
+            <div class="input-group">
+                <div class="input-field">
+                    <label><i class="fas fa-hashtag"></i> Nhập số (0 - 9999)</label>
+                    <input type="number" id="numberInput" value="920" step="1" min="0" max="9999">
+                </div>
+                <button class="btn-action" id="convertBtn"><i class="fas fa-sync-alt"></i> Chuyển & IQ hóa</button>
+            </div>
+            <div style="font-size:0.7rem; text-align:center; margin-top:0.5rem;">
+                <span class="badge-info"><i class="fas fa-heart"></i> Mật mã: 920 = Chỉ yêu em</span>
+                <span class="badge-info"><i class="fas fa-phone"></i> Đầu số 092 Vietnamobile</span>
+            </div>
+        </div>
+
+        <!-- Cột phải: Ý nghĩa mật mã tình yêu và thông tin -->
+        <div class="meaning-card">
+            <div class="section-title">
+                <i class="fas fa-heart" style="color:#e67e22;"></i> 920 – Mật mã tình yêu
+            </div>
+            <div class="meaning-content">
+                <p><strong>920</strong> được biết đến là một "mật mã tình yêu" phổ biến, bắt nguồn từ cách phát âm tương đồng trong tiếng Trung Quốc. <br> 
+                <i class="fas fa-comment-dots"></i> <strong>Ý nghĩa chính:</strong> <em>"Chỉ yêu em"</em> hoặc <em>"Chỉ yêu anh"</em>.</p>
+                
+                <div class="phonetic-box">
+                    <i class="fas fa-language"></i> Giải mã đồng âm:<br>
+                    9 (九 - Jiǔ) → gần âm "就" (Jiù): nghĩa là <strong>"chính là / chỉ"</strong><br>
+                    2 (二 - Èr) → gần âm "爱" (Ài): nghĩa là <strong>"yêu"</strong><br>
+                    0 (零 - Líng) → gần âm "你" (Nǐ): nghĩa là <strong>"em / anh"</strong><br>
+                    ➜ <strong>"Jiù ài nǐ"</strong> → <strong style="color:#c0392b;">Chính là yêu em, chỉ yêu mình em</strong>
+                </div>
+
+                <p><i class="fas fa-mobile-alt"></i> <strong>Ý nghĩa khác:</strong><br>
+                • <strong>Viễn thông:</strong> Đầu số <strong>092</strong> thuộc nhà mạng Vietnamobile (được cấp từ năm 2009). Đây là một phần của dải số 092, 056, 058.<br>
+                • <strong>Đời sống / Công nghệ:</strong> 920 xuất hiện trong các dòng sản phẩm như Nokia Lumia 920, webcam Logitech C920, v.v.</p>
+                
+                <div style="background: rgba(0,0,0,0.02); border-radius: 1rem; padding: 0.6rem; margin: 0.8rem 0;">
+                    <i class="fas fa-gem"></i> <strong>✨ Mở rộng:</strong> Các mật mã tình yêu khác:
+                    <ul class="code-list">
+                        <li>💌 <strong>520</strong> = "Anh yêu em" (Wǒ ài nǐ)</li>
+                        <li>💌 <strong>1314</strong> = "Trọn đời trọn kiếp" (Yīshēng yīshì)</li>
+                        <li>💌 <strong>770</strong> = "Hôn em" / Thân mật</li>
+                        <li>💌 <strong>880</strong> = "Ôm em" (Bào bào nǐ)</li>
+                    </ul>
+                </div>
+                <p class="ref-link">
+                    <i class="fas fa-book-open"></i> Nguồn: Tổng hợp từ FPTShop, CellphoneS, Prepedu, VOH và các tài liệu tham khảo.
+                </p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-robot"></i> IQ 920 · Chuyển đổi số sang chữ · Chủ đề tùy chỉnh | Mã tình yêu & thông tin đa chiều
+    </footer>
+</div>
+
+<script>
+    // ======================= CHUYỂN SỐ THÀNH CHỮ TIẾNG VIỆT (0-9999) ===================
+    function numberToVietnameseWords(num) {
+        if (isNaN(num) || num === null) return "không hợp lệ";
+        const n = Math.floor(Number(num));
+        if (n < 0 || n > 9999) return "ngoài khoảng 0-9999";
+        if (n === 0) return "không";
+
+        const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+        const tens = ["", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
+
+        function readThreeDigits(num3) {
+            if (num3 === 0) return "";
+            let hundreds = Math.floor(num3 / 100);
+            let remainder = num3 % 100;
+            let result = "";
+
+            if (hundreds > 0) {
+                result += units[hundreds] + " trăm";
+                if (remainder > 0) result += " ";
+            }
+            if (remainder > 0) {
+                if (remainder < 10) {
+                    if (hundreds > 0 && remainder === 5) result += "lăm";
+                    else if (remainder === 1 && hundreds > 0) result += "mốt";
+                    else if (remainder === 1) result += "một";
+                    else if (remainder === 4) result += "bốn";
+                    else if (remainder === 5) result += "năm";
+                    else result += units[remainder];
+                } else {
+                    let ten = Math.floor(remainder / 10);
+                    let unit = remainder % 10;
+                    if (ten === 1) {
+                        if (unit === 0) result += "mười";
+                        else if (unit === 5) result += "mười lăm";
+                        else result += "mười " + (unit === 1 ? "mốt" : (unit === 4 ? "bốn" : units[unit]));
+                    } else {
+                        let tenWord = tens[ten];
+                        let unitWord = "";
+                        if (unit === 1) unitWord = "mốt";
+                        else if (unit === 4) unitWord = "bốn";
+                        else if (unit === 5) unitWord = "lăm";
+                        else if (unit === 0) unitWord = "";
+                        else unitWord = units[unit];
+                        result += tenWord;
+                        if (unitWord) result += " " + unitWord;
+                    }
+                }
+            }
+            result = result.replace(/năm(?!\w)/g, (match, offset) => {
+                let before = result.substring(0, offset);
+                if (before.includes("mươi")) return "lăm";
+                return match;
+            });
+            result = result.replace(/một(?!\w)/g, (match, offset) => {
+                let before = result.substring(0, offset);
+                if (before.includes("mươi") || before.includes("trăm ")) return "mốt";
+                return match;
+            });
+            return result.trim();
+        }
+
+        let result = "";
+        let thousands = Math.floor(n / 1000);
+        let rest = n % 1000;
+
+        if (thousands > 0) {
+            result += units[thousands] + " nghìn";
+            if (rest > 0) result += " ";
+        }
+        if (rest > 0) {
+            let threeDigitPart = readThreeDigits(rest);
+            if (thousands > 0 && rest < 100 && rest > 0) {
+                if (rest < 10) threeDigitPart = "lẻ " + threeDigitPart;
+                else if (rest >= 10 && rest < 100 && !threeDigitPart.startsWith("mười")) threeDigitPart = "lẻ " + threeDigitPart;
+            }
+            result += threeDigitPart;
+        }
+        result = result.replace(/mươi một/g, "mươi mốt");
+        result = result.replace(/mươi năm/g, "mươi lăm");
+        result = result.replace(/trăm năm/g, "trăm lăm");
+        result = result.replace(/trăm một(?!\w)/g, "trăm mốt");
+        result = result.replace(/linh/g, "lẻ");
+        if (thousands > 0 && rest > 0 && rest < 100 && !result.includes("lẻ")) {
+            if (rest < 10) result = result.replace(/(nghìn)\s+(?!lẻ)/, "$1 lẻ ");
+            else if (rest >= 10 && rest < 100 && !result.includes("lẻ")) result = result.replace(/(nghìn)\s+(?!lẻ)/, "$1 lẻ ");
+        }
+        return result.trim();
+    }
+
+    function updateDisplayFromNumber(numValue) {
+        let num = Number(numValue);
+        if (isNaN(num)) num = 920;
+        num = Math.floor(num);
+        if (num < 0) num = 0;
+        if (num > 9999) num = 9999;
+
+        const numberWord = numberToVietnameseWords(num);
+        const fullPrefixDisplay = `IQ ${num}`;
+        document.getElementById("iqPreview").textContent = fullPrefixDisplay;
+        document.getElementById("wordDisplay").textContent = numberWord;
+        const inputEl = document.getElementById("numberInput");
+        if (inputEl && Number(inputEl.value) !== num) inputEl.value = num;
+    }
+
+    function initConverter() {
+        const numberInput = document.getElementById("numberInput");
+        const convertBtn = document.getElementById("convertBtn");
+        function process() {
+            let raw = numberInput.value.trim();
+            if (raw === "") raw = "920";
+            let num = parseInt(raw, 10);
+            if (isNaN(num)) num = 920;
+            num = Math.min(9999, Math.max(0, num));
+            updateDisplayFromNumber(num);
+        }
+        convertBtn.addEventListener("click", process);
+        numberInput.addEventListener("keypress", (e) => { if (e.key === "Enter") process(); });
+        numberInput.addEventListener("change", () => {
+            let val = parseInt(numberInput.value, 10);
+            if (isNaN(val)) val = 920;
+            updateDisplayFromNumber(Math.min(9999, Math.max(0, val)));
+        });
+        updateDisplayFromNumber(920);
+    }
+
+    // Theme switcher
+    function initThemeSwitcher() {
+        const btns = document.querySelectorAll(".theme-btn");
+        const body = document.body;
+        const saved = localStorage.getItem("iq_theme_v2") || "default";
+        function applyTheme(theme) {
+            body.classList.remove("theme-dark", "theme-pastel", "theme-forest");
+            if (theme !== "default") body.classList.add(`theme-${theme}`);
+            btns.forEach(btn => {
+                const val = btn.getAttribute("data-theme");
+                if (val === theme) btn.classList.add("active");
+                else btn.classList.remove("active");
+            });
+            localStorage.setItem("iq_theme_v2", theme);
+        }
+        btns.forEach(btn => {
+            btn.addEventListener("click", () => applyTheme(btn.getAttribute("data-theme")));
+        });
+        if (saved === "dark" || saved === "pastel" || saved === "forest") applyTheme(saved);
+        else applyTheme("default");
+    }
+
+    // small animation
+    function addEffects() {
+        const btn = document.getElementById("convertBtn");
+        if (btn) {
+            btn.addEventListener("click", function() {
+                this.style.transform = "scale(0.97)";
+                setTimeout(() => { if(this) this.style.transform = ""; }, 120);
+            });
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+        initConverter();
+        initThemeSwitcher();
+        addEffects();
+    });
+</script>
+</body>
+</html>
