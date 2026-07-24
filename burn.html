@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hoá Thiêu – Hành Trình Về Cõi Vĩnh Hằng</title>
+  <title>RIP</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  
   <style>
     :root {
       --gold: #c9a96e;
@@ -21,885 +21,929 @@
       --smoke: rgba(200,180,140,0.08);
     }
 
-```
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg-deep);
-  color: var(--text-light);
-  font-family: 'Noto Serif', serif;
-  overflow-x: hidden;
-  cursor: default;
-}
-
-/* ── SMOKE PARTICLE CANVAS ── */
-#smoke-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.35;
-}
-
-/* ── HERO ── */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 24px;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 70%, rgba(232,93,32,0.18) 0%, transparent 70%),
-              radial-gradient(ellipse 60% 40% at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 60%);
-}
-
-.flame-icon {
-  font-size: 64px;
-  line-height: 1;
-  filter: drop-shadow(0 0 30px rgba(232,93,32,0.7)) drop-shadow(0 0 60px rgba(255,140,66,0.4));
-  animation: flicker 2.5s ease-in-out infinite;
-  position: relative; z-index: 2;
-}
-
-@keyframes flicker {
-  0%, 100% { transform: scaleY(1) scaleX(1); filter: drop-shadow(0 0 30px rgba(232,93,32,0.7)); }
-  25% { transform: scaleY(1.05) scaleX(0.97); filter: drop-shadow(0 0 40px rgba(232,93,32,0.9)); }
-  50% { transform: scaleY(0.97) scaleX(1.02); filter: drop-shadow(0 0 25px rgba(255,140,66,0.6)); }
-  75% { transform: scaleY(1.03) scaleX(0.98); filter: drop-shadow(0 0 45px rgba(232,93,32,1)); }
-}
-
-.hero-eyebrow {
-  font-family: 'Noto Serif', serif;
-  font-size: 11px;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin: 24px 0 16px;
-  opacity: 0.8;
-  position: relative; z-index: 2;
-}
-
-.hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(38px, 7vw, 80px);
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--text-light);
-  position: relative; z-index: 2;
-  text-shadow: 0 0 60px rgba(201,169,110,0.3);
-}
-
-.hero h1 span {
-  color: var(--gold);
-  font-style: italic;
-}
-
-.hero-sub {
-  font-size: clamp(14px, 2vw, 18px);
-  color: var(--text-dim);
-  max-width: 560px;
-  line-height: 1.9;
-  margin: 24px auto 0;
-  font-weight: 300;
-  position: relative; z-index: 2;
-}
-
-.divider-flame {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 48px auto;
-  width: fit-content;
-}
-
-.divider-flame::before,
-.divider-flame::after {
-  content: '';
-  width: 80px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold));
-}
-.divider-flame::after { background: linear-gradient(to left, transparent, var(--gold)); }
-
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(to bottom, rgba(10,8,5,0.95), transparent);
-}
-
-.nav-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  color: var(--gold);
-  letter-spacing: 1px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 32px;
-  list-style: none;
-}
-
-.nav-links a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  transition: color 0.3s;
-}
-.nav-links a:hover { color: var(--gold); }
-
-/* ── SECTIONS ── */
-section {
-  position: relative;
-  z-index: 2;
-  padding: 100px 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.section-label {
-  font-size: 10px;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--ember);
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 700;
-  color: var(--text-light);
-  line-height: 1.2;
-  margin-bottom: 20px;
-}
-
-.section-title em {
-  color: var(--gold);
-  font-style: italic;
-}
-
-.section-intro {
-  font-size: 16px;
-  line-height: 2;
-  color: var(--text-dim);
-  max-width: 680px;
-  font-weight: 300;
-}
-
-/* ── PROCESS TIMELINE ── */
-.timeline {
-  margin-top: 64px;
-  display: grid;
-  gap: 2px;
-}
-
-.timeline-item {
-  display: grid;
-  grid-template-columns: 64px 1px 1fr;
-  gap: 0 24px;
-  align-items: start;
-  padding-bottom: 48px;
-  position: relative;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.timeline-item.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.timeline-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  color: var(--gold-dark);
-  opacity: 0.5;
-  font-style: italic;
-  text-align: right;
-  padding-top: 4px;
-}
-
-.timeline-line {
-  width: 1px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  min-height: 100%;
-}
-
-.timeline-content {
-  padding-top: 6px;
-}
-
-.timeline-content h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  color: var(--text-light);
-  margin-bottom: 10px;
-}
-
-.timeline-content p {
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--text-dim);
-  font-weight: 300;
-}
-
-.timeline-tag {
-  display: inline-block;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--ember);
-  border: 1px solid rgba(232,93,32,0.3);
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-}
-
-/* ── SPIRITUAL CARDS ── */
-.stories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 56px;
-}
-
-.story-card {
-  background: var(--bg-card);
-  border: 1px solid rgba(201,169,110,0.12);
-  border-radius: 4px;
-  padding: 36px 32px;
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s;
-  cursor: pointer;
-}
-
-.story-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.story-card:hover::before { opacity: 1; }
-.story-card:hover { border-color: rgba(201,169,110,0.3); }
-
-.story-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.story-icon {
-  font-size: 32px;
-  margin-bottom: 20px;
-  display: block;
-  filter: drop-shadow(0 0 12px rgba(201,169,110,0.4));
-}
-
-.story-card h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  color: var(--text-light);
-  margin-bottom: 14px;
-  line-height: 1.3;
-}
-
-.story-card p {
-  font-size: 14px;
-  line-height: 1.9;
-  color: var(--text-dim);
-  font-weight: 300;
-}
-
-.story-card .expand-btn {
-  display: inline-block;
-  margin-top: 18px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  cursor: pointer;
-  border-bottom: 1px solid rgba(201,169,110,0.3);
-  padding-bottom: 2px;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.story-card .expand-btn:hover { color: var(--gold-light); border-color: var(--gold-light); }
-
-.story-detail {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease;
-}
-
-.story-detail.open { max-height: 400px; }
-
-.story-detail p {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(201,169,110,0.1);
-  font-style: italic;
-  color: rgba(168,152,120,0.8);
-}
-
-/* ── QUOTE BANNER ── */
-.quote-banner {
-  background: linear-gradient(135deg, rgba(201,169,110,0.08), rgba(232,93,32,0.05));
-  border: 1px solid rgba(201,169,110,0.15);
-  border-left: 3px solid var(--gold);
-  padding: 48px 56px;
-  margin: 80px 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.quote-banner::after {
-  content: '"';
-  position: absolute;
-  right: 40px;
-  top: -20px;
-  font-family: 'Playfair Display', serif;
-  font-size: 200px;
-  color: rgba(201,169,110,0.05);
-  line-height: 1;
-  pointer-events: none;
-}
-
-.quote-banner blockquote {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(18px, 2.5vw, 26px);
-  font-style: italic;
-  color: var(--text-light);
-  line-height: 1.7;
-  position: relative; z-index: 1;
-}
-
-.quote-banner cite {
-  display: block;
-  margin-top: 20px;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-style: normal;
-}
-
-/* ── BELIEFS ── */
-.beliefs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1px;
-  background: rgba(201,169,110,0.08);
-  margin-top: 56px;
-  border: 1px solid rgba(201,169,110,0.08);
-}
-
-.belief-item {
-  background: var(--bg-deep);
-  padding: 40px 32px;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.8s ease, background 0.3s;
-}
-
-.belief-item:hover { background: var(--bg-card); }
-.belief-item.visible { opacity: 1; }
-
-.belief-item .b-icon {
-  font-size: 36px;
-  display: block;
-  margin-bottom: 16px;
-}
-
-.belief-item h4 {
-  font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  color: var(--gold);
-  margin-bottom: 10px;
-}
-
-.belief-item p {
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--text-dim);
-  font-weight: 300;
-}
-
-/* ── FAQ ── */
-.faq-list {
-  margin-top: 56px;
-  display: grid;
-  gap: 12px;
-}
-
-.faq-item {
-  border: 1px solid rgba(201,169,110,0.1);
-  border-radius: 2px;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-.faq-item.visible { opacity: 1; }
-
-.faq-q {
-  padding: 24px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  background: var(--bg-card);
-  transition: background 0.2s;
-  font-family: 'Playfair Display', serif;
-  font-size: 17px;
-  color: var(--text-light);
-}
-
-.faq-q:hover { background: rgba(201,169,110,0.08); }
-
-.faq-toggle {
-  font-size: 20px;
-  color: var(--gold);
-  transition: transform 0.3s;
-  line-height: 1;
-}
-
-.faq-a {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-}
-
-.faq-a.open { max-height: 300px; }
-
-.faq-a-inner {
-  padding: 0 28px 24px;
-  background: var(--bg-card);
-  font-size: 14px;
-  line-height: 1.9;
-  color: var(--text-dim);
-  font-weight: 300;
-}
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid rgba(201,169,110,0.12);
-  padding: 60px 40px;
-  text-align: center;
-  position: relative; z-index: 2;
-}
-
-footer .f-flame { font-size: 28px; margin-bottom: 16px; display: block; }
-footer p { font-size: 12px; color: var(--text-dim); letter-spacing: 1px; line-height: 2; }
-footer p strong { color: var(--gold); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  nav { padding: 16px 20px; }
-  .nav-links { display: none; }
-  .quote-banner { padding: 32px 28px; }
-  section { padding: 80px 20px; }
-}
-
-/* Scroll reveal helpers */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-```
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-light);
+      font-family: 'Noto Serif', serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    #smoke-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+
+    /* ── AUTH OVERLAY & BUTTONS ── */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 5, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      padding: 40px 32px;
+      border-radius: 8px;
+      max-width: 440px;
+      box-shadow: 0 0 30px rgba(201, 169, 110, 0.15);
+    }
+
+    .auth-card h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      margin-bottom: 12px;
+      font-size: 24px;
+    }
+
+    .auth-card p {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      color: #333333;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-google:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 4px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: var(--gold);
+      color: var(--bg-deep);
+    }
+
+    /* Hide protected content by default */
+    .protected-content {
+      display: none;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 70%, rgba(232,93,32,0.18) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 60%);
+    }
+
+    .flame-icon {
+      font-size: 64px;
+      line-height: 1;
+      filter: drop-shadow(0 0 30px rgba(232,93,32,0.7)) drop-shadow(0 0 60px rgba(255,140,66,0.4));
+      animation: flicker 2.5s ease-in-out infinite;
+      position: relative; z-index: 2;
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: scaleY(1) scaleX(1); filter: drop-shadow(0 0 30px rgba(232,93,32,0.7)); }
+      25% { transform: scaleY(1.05) scaleX(0.97); filter: drop-shadow(0 0 40px rgba(232,93,32,0.9)); }
+      50% { transform: scaleY(0.97) scaleX(1.02); filter: drop-shadow(0 0 25px rgba(255,140,66,0.6)); }
+      75% { transform: scaleY(1.03) scaleX(0.98); filter: drop-shadow(0 0 45px rgba(232,93,32,1)); }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Noto Serif', serif;
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 24px 0 16px;
+      opacity: 0.8;
+      position: relative; z-index: 2;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 7vw, 80px);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-light);
+      position: relative; z-index: 2;
+      text-shadow: 0 0 60px rgba(201,169,110,0.3);
+    }
+
+    .hero h1 span { color: var(--gold); font-style: italic; }
+
+    .hero-sub {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text-dim);
+      max-width: 600px;
+      line-height: 1.9;
+      margin: 24px auto 0;
+      font-weight: 300;
+      position: relative; z-index: 2;
+    }
+
+    .divider-flame {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 48px auto;
+      width: fit-content;
+    }
+
+    .divider-flame::before, .divider-flame::after {
+      content: '';
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .divider-flame::after { background: linear-gradient(to left, transparent, var(--gold)); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(10,8,5,0.95), transparent);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 2;
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .section-title em { color: var(--gold); font-style: italic; }
+
+    .section-intro {
+      font-size: 16px;
+      line-height: 2;
+      color: var(--text-dim);
+      max-width: 680px;
+      font-weight: 300;
+    }
+
+    /* ── PROCESS TIMELINE ── */
+    .timeline { margin-top: 64px; display: grid; gap: 2px; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 64px 1px 1fr;
+      gap: 0 24px;
+      align-items: start;
+      padding-bottom: 48px;
+      position: relative;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+    .timeline-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: var(--gold-dark);
+      opacity: 0.5;
+      font-style: italic;
+      text-align: right;
+      padding-top: 4px;
+    }
+
+    .timeline-line {
+      width: 1px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      min-height: 100%;
+    }
+
+    .timeline-content { padding-top: 6px; }
+
+    .timeline-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+
+    .timeline-content p {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    .timeline-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ember);
+      border: 1px solid rgba(232,93,32,0.3);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* ── SPIRITUAL CARDS ── */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .story-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(201,169,110,0.12);
+      border-radius: 4px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s;
+    }
+
+    .story-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .story-card:hover::before { opacity: 1; }
+    .story-card:hover { border-color: rgba(201,169,110,0.3); }
+    .story-card.visible { opacity: 1; transform: translateY(0); }
+
+    .story-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+      display: block;
+      filter: drop-shadow(0 0 12px rgba(201,169,110,0.4));
+    }
+
+    .story-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--text-light);
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .story-card p {
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    .story-card .expand-btn {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      cursor: pointer;
+      border-bottom: 1px solid rgba(201,169,110,0.3);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .story-card .expand-btn:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+    .story-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .story-detail.open { max-height: 400px; }
+
+    .story-detail p {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(201,169,110,0.1);
+      font-style: italic;
+      color: rgba(168,152,120,0.8);
+    }
+
+    /* ── QUOTE BANNER ── */
+    .quote-banner {
+      background: linear-gradient(135deg, rgba(201,169,110,0.08), rgba(232,93,32,0.05));
+      border: 1px solid rgba(201,169,110,0.15);
+      border-left: 3px solid var(--gold);
+      padding: 48px 56px;
+      margin: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-banner::after {
+      content: '"';
+      position: absolute;
+      right: 40px;
+      top: -20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      color: rgba(201,169,110,0.05);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-banner blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-style: italic;
+      color: var(--text-light);
+      line-height: 1.7;
+      position: relative; z-index: 1;
+    }
+
+    .quote-banner cite {
+      display: block;
+      margin-top: 20px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ── BELIEFS ── */
+    .beliefs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: rgba(201,169,110,0.08);
+      margin-top: 56px;
+      border: 1px solid rgba(201,169,110,0.08);
+    }
+
+    .belief-item {
+      background: var(--bg-deep);
+      padding: 40px 32px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.8s ease, background 0.3s;
+    }
+
+    .belief-item:hover { background: var(--bg-card); }
+    .belief-item.visible { opacity: 1; }
+
+    .belief-item .b-icon { font-size: 36px; display: block; margin-bottom: 16px; }
+
+    .belief-item h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .belief-item p {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    /* ── FAQ ── */
+    .faq-list { margin-top: 56px; display: grid; gap: 12px; }
+
+    .faq-item {
+      border: 1px solid rgba(201,169,110,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .faq-item.visible { opacity: 1; }
+
+    .faq-q {
+      padding: 24px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      background: var(--bg-card);
+      transition: background 0.2s;
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: var(--text-light);
+    }
+
+    .faq-q:hover { background: rgba(201,169,110,0.08); }
+
+    .faq-toggle {
+      font-size: 20px;
+      color: var(--gold);
+      transition: transform 0.3s;
+      line-height: 1;
+    }
+
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .faq-a.open { max-height: 300px; }
+
+    .faq-a-inner {
+      padding: 0 28px 24px;
+      background: var(--bg-card);
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(201,169,110,0.12);
+      padding: 60px 40px;
+      text-align: center;
+      position: relative; z-index: 2;
+    }
+
+    footer .f-flame { font-size: 28px; margin-bottom: 16px; display: block; }
+    footer p { font-size: 12px; color: var(--text-dim); letter-spacing: 1px; line-height: 2; }
+    footer p strong { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .quote-banner { padding: 32px 28px; }
+      section { padding: 80px 20px; }
+    }
   </style>
 </head>
 <body>
 
 <canvas id="smoke-canvas"></canvas>
 
-<!-- NAV -->
-
-<nav>
-  <div class="nav-logo">🕯 Vĩnh Hằng</div>
-  <ul class="nav-links">
-    <li><a href="#quy-trinh">Quy trình</a></li>
-    <li><a href="#tam-linh">Tâm linh</a></li>
-    <li><a href="#tin-nguong">Tín ngưỡng</a></li>
-    <li><a href="#faq">Hỏi đáp</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-
-<div class="hero">
-  <span class="flame-icon">🔥</span>
-  <p class="hero-eyebrow">Hành trình về cõi vĩnh hằng</p>
-  <h1>Hoả Thiêu –<br/><span>Về Cùng Đất Trời</span></h1>
-  <p class="hero-sub">
-    Ngọn lửa không huỷ diệt linh hồn — nó giải phóng. Từ tro bụi trở về với đất, từ khói hương
-    về với trời. Một hành trình thiêng liêng mà mỗi người đều đi qua.
-  </p>
-  <div class="divider-flame">🌸</div>
-</div>
-
-<!-- PROCESS -->
-
-<section id="quy-trinh">
-  <p class="section-label">Nghi thức & Quy trình</p>
-  <h2 class="section-title">Những bước trong <em>nghi lễ</em> hoả thiêu</h2>
-  <p class="section-intro">
-    Hoả thiêu là nghi thức trang nghiêm, mang ý nghĩa tâm linh sâu sắc. Mỗi bước đều được thực hiện
-    với lòng thành kính để tiễn đưa người quá cố về với cõi vĩnh hằng.
-  </p>
-
-  <div class="timeline">
-
-```
-<div class="timeline-item">
-  <div class="timeline-num">01</div>
-  <div class="timeline-line"></div>
-  <div class="timeline-content">
-    <span class="timeline-tag">Chuẩn bị</span>
-    <h3>Tắm rửa & Khâm liệm</h3>
-    <p>Thi hài được tắm sạch, mặc áo trắng hoặc trang phục theo tôn giáo, tín ngưỡng của gia đình.
-    Đặt người quá cố vào quan tài và thực hiện các nghi lễ phù hợp — thắp hương, đọc kinh, cầu nguyện.</p>
+<!-- GOOGLE AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <span style="font-size: 40px; display: block; margin-bottom: 12px;">🕯️</span>
+    <h2>Chào Mừng Đến Với Vĩnh Hằng</h2>
+    <p>Vui lòng đăng nhập tài khoản Google để tiếp tục khám phá không gian tâm linh và các nội dung chuyên sâu.</p>
+    <button class="btn-google" id="btn-login">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.41-1.57-5.13-3.72L.97 13.01C2.47 15.98 5.5 18 9 18z"/><path fill="#FBBC05" d="M3.87 10.8c-.18-.53-.28-1.1-.28-1.8s.1-1.27.28-1.8L.97 4.99C.35 6.22 0 7.57 0 9s.35 2.78.97 4.01l2.9-2.21z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.5 0 2.47 2.02.97 4.99l2.9 2.21C4.59 5.05 6.62 3.58 9 3.58z"/></svg>
+      Đăng nhập bằng Google
+    </button>
   </div>
 </div>
 
-<div class="timeline-item">
-  <div class="timeline-num">02</div>
-  <div class="timeline-line"></div>
-  <div class="timeline-content">
-    <span class="timeline-tag">Tang lễ</span>
-    <h3>Lễ viếng & Tiễn đưa</h3>
-    <p>Gia đình, bạn bè đến thắp nhang, dâng hoa, lạy bái và tưởng nhớ người đã khuất. Lễ tiễn đưa
-    thường kéo dài 1–3 ngày, với các buổi tụng kinh, cầu siêu do tăng ni hoặc cha cố chủ trì.</p>
+<!-- MAIN PROTECTED CONTENT -->
+<div class="protected-content" id="main-content">
+
+  <nav>
+    <div class="nav-logo">🕯️ Vĩnh Hằng</div>
+    <ul class="nav-links">
+      <li><a href="#quy-trinh">Quy trình</a></li>
+      <li><a href="#tam-linh">Tâm linh</a></li>
+      <li><a href="#tin-nguong">Tín ngưỡng</a></li>
+      <li><a href="#faq">Hỏi đáp</a></li>
+      <li>
+        <div class="user-profile">
+          <img id="user-photo" class="user-avatar" src="" alt="Avatar" />
+          <button class="btn-logout" id="btn-logout">Đăng xuất</button>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="flame-icon">🔥</span>
+    <p class="hero-eyebrow">✨ Hành trình nhẹ nhàng về cõi vĩnh hằng ✨</p>
+    <h1>Hỏa Thiêu –<br/><span>Trở Về Cùng Đất Trời</span></h1>
+    <p class="hero-sub">
+      Ngọn lửa thiêng không hủy diệt linh hồn — nó buông bỏ và giải phóng. 🕊️ Từ tro bụi trở về với đất mẹ, từ khói hương nhẹ bay về với cõi trời. Một hành trình thanh thản và tôn nghiêm mà mỗi nhân duyên đều đi qua. 🌿
+    </p>
+    <div class="divider-flame">🌸</div>
   </div>
-</div>
 
-<div class="timeline-item">
-  <div class="timeline-num">03</div>
-  <div class="timeline-line"></div>
-  <div class="timeline-content">
-    <span class="timeline-tag">Hành trình</span>
-    <h3>Đưa linh cữu đến lò thiêu</h3>
-    <p>Xe tang đưa quan tài đến nhà hỏa táng. Gia đình đi theo, đọc kinh hoặc niệm Phật trên đường.
-    Trước khi đưa vào lò, gia đình có thể thực hiện lần cuối nghi thức từ biệt bên quan tài.</p>
-  </div>
-</div>
+  <!-- PROCESS -->
+  <section id="quy-trinh">
+    <p class="section-label">📜 Nghi thức & Quy trình</p>
+    <h2 class="section-title">Các bước trong <em>nghi lễ</em> hỏa thiêu</h2>
+    <p class="section-intro">
+      Hỏa thiêu là nghi thức trang nghiêm, chan chứa tình yêu thương và sự tiễn biệt. Mỗi bước đi đều được chuẩn bị cẩn trọng với trọn vẹn lòng thành kính, cầu mong người quá cố thong rong về chốn an yên. 🙏
+    </p>
 
-<div class="timeline-item">
-  <div class="timeline-num">04</div>
-  <div class="timeline-line"></div>
-  <div class="timeline-content">
-    <span class="timeline-tag">Hoả thiêu</span>
-    <h3>Ngọn lửa thiêng liêng</h3>
-    <p>Quan tài được đưa vào lò hỏa táng. Nhiệt độ từ 800–1.000°C. Quá trình kéo dài khoảng
-    1,5–2 tiếng. Tro cốt sau đó được thu gom và đặt vào hũ sứ. Đây là khoảnh khắc linh hồn
-    được cho là hoàn toàn thoát khỏi thể xác.</p>
-  </div>
-</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-num">01</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <span class="timeline-tag">✨ Chuẩn bị</span>
+          <h3>Tắm rửa & Khâm liệm 🕊️</h3>
+          <p>Thi hài được tắm gội sạch sẻ, khoác lên mình trang phục thuần khiết hoặc trang phục trang trọng theo tín ngưỡng gia đình. Người thân nhẹ nhàng tiễn đưa, thực hiện nghi lễ dâng hương, đọc kinh cầu nguyện bình an cho hương linh.</p>
+        </div>
+      </div>
 
-<div class="timeline-item">
-  <div class="timeline-num">05</div>
-  <div class="timeline-line"></div>
-  <div class="timeline-content">
-    <span class="timeline-tag">Sau hoả thiêu</span>
-    <h3>Nhận tro cốt & An táng</h3>
-    <p>Gia đình nhận hũ tro cốt, có thể gửi chùa, nhà thờ, lưu giữ tại nhà hoặc rải tro xuống
-    sông/biển theo nguyện vọng người quá cố. Các buổi cúng 49 ngày, 100 ngày, giỗ đầu được tổ chức
-    để cầu nguyện cho linh hồn siêu thoát.</p>
-  </div>
-</div>
-```
+      <div class="timeline-item">
+        <div class="timeline-num">02</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <span class="timeline-tag">💐 Tang lễ</span>
+          <h3>Lễ viếng & Tiễn biệt 🕯️</h3>
+          <p>Gia quyến cùng bạn hữu gần xa tụ hội thắp nén hương thơm, dâng hoa tươi và trải lòng tưởng nhớ. Mọi nghi thức tụng kinh cầu siêu hay cầu nguyện được chủ trì bởi các bậc đại đức, linh mục để gia tăng phước lành.</p>
+        </div>
+      </div>
 
-  </div>
-</section>
+      <div class="timeline-item">
+        <div class="timeline-num">03</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <span class="timeline-tag">🚗 Hành trình</span>
+          <h3>Đưa linh cữu đến nhà hỏa táng 🛕</h3>
+          <p>Xe tang đưa linh cữu lăn bánh chậm rãi. Người thân dõi theo, niệm Phật hoặc đọc kinh nguyện trên suốt đoạn đường. Trước khi đưa vào lò hỏa táng, gia đình thực hiện nghi thức từ biệt thiêng liêng lần cuối.</p>
+        </div>
+      </div>
 
-<!-- QUOTE -->
+      <div class="timeline-item">
+        <div class="timeline-num">04</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <span class="timeline-tag">🔥 Hỏa thiêu</span>
+          <h3>Ngọn lửa chuyển hóa thiêng liêng 🌌</h3>
+          <p>Quan tài được chuyển vào lò hỏa táng ở nhiệt độ cao (800–1.000°C) trong khoảng 1,5 đến 2 giờ. Ngọn lửa đóng vai trò làm sạch và chuyển hóa, giúp linh hồn thanh thản rời bỏ trần thế, rũ bỏ hết mệt mỏi trần gian.</p>
+        </div>
+      </div>
 
-<div style="max-width:1100px; margin:0 auto; padding: 0 24px; position:relative; z-index:2;">
-  <div class="quote-banner reveal">
-    <blockquote>
-      "Thân xác trở về cát bụi, nhưng linh hồn như ngọn nến — ngọn lửa tắt không có nghĩa là ánh sáng
-      đã biến mất. Nó chỉ chuyển sang một nơi khác mà mắt thường không thấy được."
-    </blockquote>
-    <cite>— Triết lý dân gian Việt Nam</cite>
-  </div>
-</div>
-
-<!-- SPIRITUAL STORIES -->
-
-<section id="tam-linh">
-  <p class="section-label">Trải nghiệm tâm linh</p>
-  <h2 class="section-title">Những câu chuyện <em>thường gặp</em></h2>
-  <p class="section-intro">
-    Nhiều gia đình chia sẻ những trải nghiệm kỳ lạ xung quanh tang lễ và hoả thiêu. Dù tin hay không,
-    những câu chuyện này là phần không thể thiếu trong hành trình tiễn đưa người thân.
-  </p>
-
-  <div class="stories-grid">
-
-```
-<div class="story-card">
-  <span class="story-icon">🕯</span>
-  <h3>Ngọn nến tự bật sáng</h3>
-  <p>Nhiều gia đình kể lại rằng ngọn nến trên bàn thờ bỗng dưng tự bật sáng vào đêm thứ ba hoặc
-  đêm thứ bảy sau khi người thân mất, dù không có ai châm lửa.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Theo tín ngưỡng dân gian, đây là dấu hiệu người quá cố về thăm nhà lần cuối trước khi đi xa.
-    Một số gia đình cũng ghi nhận mùi hương quen thuộc của người quá cố thoảng qua trong đêm đó,
-    dù không có ai thắp nhang. Nhiều người cho rằng đây là cách linh hồn báo hiệu "tôi đã về, đừng lo lắng".</p>
-  </div>
-</div>
-
-<div class="story-card">
-  <span class="story-icon">🦋</span>
-  <h3>Con bướm lạ xuất hiện</h3>
-  <p>Một con bướm trắng hoặc vàng bay vào nhà đúng lúc lễ tang diễn ra, đậu lên bàn thờ hoặc
-  lên người thân — được coi là hiện thân của linh hồn người quá cố.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Trong văn hóa Việt Nam và nhiều nền văn hóa Á Đông, bướm trắng thường được coi là biểu tượng
-    của linh hồn. Chúng xuất hiện như để an ủi gia đình rằng người quá cố đã được siêu thoát.
-    Không ít câu chuyện kể về con bướm đậu thật lâu, không sợ người, rồi nhẹ nhàng bay đi sau
-    khi lễ kết thúc.</p>
-  </div>
-</div>
-
-<div class="story-card">
-  <span class="story-icon">💭</span>
-  <h3>Giấc mơ báo hiệu</h3>
-  <p>Người thân trong gia đình — thường là người gần gũi nhất — mơ thấy người quá cố mỉm cười,
-  mặc quần áo trắng, đứng ở một nơi tươi sáng và nói lời tạm biệt.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Giấc mơ thường xảy ra vào đêm thứ 3, 7 hoặc 49 sau ngày mất. Người quá cố trong mơ thường
-    trông trẻ hơn, khoẻ mạnh, không còn bệnh tật. Đây được coi là dấu hiệu linh hồn đã siêu thoát.
-    Các nhà nghiên cứu tâm lý gọi đây là "grief dreams" — những giấc mơ giúp người sống chữa lành
-    nỗi đau.</p>
-  </div>
-</div>
-
-<div class="story-card">
-  <span class="story-icon">🌡</span>
-  <h3>Nhiệt độ phòng đột ngột thay đổi</h3>
-  <p>Trong nhà hỏa táng hoặc tại nhà ngay sau tang lễ, nhiều người cảm nhận được một luồng lạnh
-  bất thường dù không có gió, hoặc ngược lại — một hơi ấm kỳ lạ bao phủ.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Trong tín ngưỡng tâm linh, luồng lạnh đột ngột là dấu hiệu có sự hiện diện của linh hồn.
-    Một số người còn cảm thấy có bàn tay vô hình vỗ nhẹ vai hoặc vuốt tóc. Luồng ấm áp bất thường
-    lại thường được hiểu là sự an ủi, ôm ấp của người đã khuất dành cho người thân còn ở lại.</p>
-  </div>
-</div>
-
-<div class="story-card">
-  <span class="story-icon">🕊</span>
-  <h3>Chim về đậu không bay đi</h3>
-  <p>Một con chim — chim sẻ, chim câu, hoặc đôi khi là chim lạ chưa từng thấy — bay vào nhà
-  hoặc đậu trước cửa ngay ngày tang lễ và không rời đi trong nhiều giờ đồng hồ.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Chim được coi là sứ giả giữa hai thế giới trong nhiều nền văn hóa. Tại Việt Nam, chim bay
-    vào nhà ngày tang lễ được hiểu là linh hồn người mất đang "ghé thăm" qua hình dáng con chim.
-    Gia đình thường không xua đuổi mà để yên, thậm chí nói chuyện với chim như nói chuyện với
-    người thân.</p>
-  </div>
-</div>
-
-<div class="story-card">
-  <span class="story-icon">🔮</span>
-  <h3>Đồ vật tự di chuyển</h3>
-  <p>Tấm ảnh của người quá cố tự rơi xuống, đồng hồ tự dừng đúng giờ người mất, hoặc đồ vật
-  yêu thích của người đã khuất bỗng dưng thay đổi vị trí.</p>
-  <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
-  <div class="story-detail">
-    <p>Những hiện tượng này thường xảy ra trong vòng 49 ngày đầu — thời gian linh hồn được
-    cho là còn vương vấn trần gian. Tấm ảnh rơi vào ngày giỗ, đồng hồ dừng lại đúng thời điểm
-    hấp hối... Gia đình thường giải thích đây là cách người đã khuất "nhắc nhở" hoặc "gọi tên"
-    những người thân.</p>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- BELIEFS -->
-
-<section id="tin-nguong">
-  <p class="section-label">Tín ngưỡng & Quan niệm</p>
-  <h2 class="section-title">Hoả thiêu trong các <em>tín ngưỡng</em></h2>
-  <p class="section-intro">
-    Mỗi tôn giáo và tín ngưỡng có cách nhìn riêng về hoả thiêu — nhưng tất cả đều hướng đến
-    một điều: sự bình an cho linh hồn người quá cố.
-  </p>
-
-  <div class="beliefs-grid">
-    <div class="belief-item">
-      <span class="b-icon">☸️</span>
-      <h4>Phật giáo</h4>
-      <p>Hoả thiêu phù hợp với quan niệm vô thường. Thân xác chỉ là "túi da" tạm thời. Lửa giải phóng
-      thần thức để tiếp tục luân hồi hoặc siêu thoát về cõi Phật.</p>
+      <div class="timeline-item">
+        <div class="timeline-num">05</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <span class="timeline-tag">🏺 Sau hỏa thiêu</span>
+          <h3>Nhận tro cốt & An táng 🌾</h3>
+          <p>Gia đình đón nhận hũ tro cốt thanh sạch. Hũ cốt có thể gửi gắm nơi chùa chiền, nhà thờ, lưu giữ tại từ đường hoặc rải hòa vào sông biển rộng lớn. Các lễ cúng 49 ngày, 100 ngày được duy trì trọn vẹn để tiếp thêm năng lượng siêu thoát.</p>
+        </div>
+      </div>
     </div>
-    <div class="belief-item">
-      <span class="b-icon">🏮</span>
-      <h4>Dân gian Việt</h4>
-      <p>"Đất lành chim đậu, tro tàn gió bay." Tro cốt gửi về đất mẹ, hoà vào tự nhiên. Linh hồn về
-      trời, phù hộ con cháu. Thờ cúng tổ tiên là sợi dây nối hai thế giới.</p>
-    </div>
-    <div class="belief-item">
-      <span class="b-icon">🔯</span>
-      <h4>Ấn Độ giáo</h4>
-      <p>Hoả thiêu là nghi thức thiêng liêng nhất — Agni (thần lửa) đưa linh hồn lên cõi trời. Sông
-      Hằng là nơi rải tro để được giải thoát khỏi vòng luân hồi.</p>
-    </div>
-    <div class="belief-item">
-      <span class="b-icon">✝️</span>
-      <h4>Công giáo</h4>
-      <p>Giáo hội cho phép hoả thiêu từ năm 1963. Tro cốt phải được lưu giữ trang nghiêm, không được
-      rải. Linh hồn thuộc về Thiên Chúa bất kể thể xác được an táng thế nào.</p>
-    </div>
-    <div class="belief-item">
-      <span class="b-icon">🌿</span>
-      <h4>Quan điểm hiện đại</h4>
-      <p>Hoả thiêu thân thiện với môi trường hơn địa táng. Tiết kiệm đất, giảm ô nhiễm. Nhiều người
-      chọn rải tro lên rừng, biển — "trở về với thiên nhiên" theo nghĩa đen và nghĩa bóng.</p>
-    </div>
-    <div class="belief-item">
-      <span class="b-icon">🌊</span>
-      <h4>Đạo gia</h4>
-      <p>Lửa là sự biến hoá của ngũ hành. Từ Kim Mộc Thuỷ Hoả Thổ, con người trở về với Đạo —
-      nguồn gốc của vũ trụ. Hoả thiêu là chu trình tự nhiên nhất.</p>
+  </section>
+
+  <!-- QUOTE -->
+  <div style="max-width:1100px; margin:0 auto; padding: 0 24px; position:relative; z-index:2;">
+    <div class="quote-banner reveal">
+      <blockquote>
+        "Thân xác như chiếc áo khoác trần gian, khi cũ kỹ sẽ gửi trả về cát bụi. Nhưng linh hồn như ngọn nến sáng — ngọn lửa tan đi không có nghĩa ánh sáng mất đi, mà là tan hòa vào vũ trụ bao la." 🌟
+      </blockquote>
+      <cite>— Triết lý nhân sinh & Tâm linh Dân gian</cite>
     </div>
   </div>
-</section>
 
-<!-- FAQ -->
+  <!-- SPIRITUAL STORIES -->
+  <section id="tam-linh">
+    <p class="section-label">🔮 Trải nghiệm tâm linh</p>
+    <h2 class="section-title">Những câu chuyện <em>kỳ diệu & huyền bí</em></h2>
+    <p class="section-intro">
+      Gia đình người thân thường chia sẻ những trải nghiệm kỳ diệu và bình yên xung quanh thời điểm phân ly. Dù giải thích bằng góc độ tâm linh hay ký ức, đó đều là sợi dây tình cảm vô hình nối liền hai thế giới. 💫
+    </p>
 
-<section id="faq">
-  <p class="section-label">Hỏi & Đáp</p>
-  <h2 class="section-title">Những câu hỏi <em>thường gặp</em></h2>
+    <div class="stories-grid">
+      <div class="story-card">
+        <span class="story-icon">🕯️</span>
+        <h3>Ngọn nến tự bừng sáng</h3>
+        <p>Không ít gia đình nhận thấy ngọn nến trên bàn thờ bỗng nhiên bừng sáng lung linh vào đêm thứ ba hoặc thứ bảy, dẫu không gian hoàn toàn không có gió.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Dân gian coi đây là lời thông báo người quá cố ghé về thăm nhà trước khi bước sang hành trình mới. Nhiều người còn cảm nhận được làn hương thơm quen thuộc thoảng qua, mang đến cảm giác ấm áp và bình yên kỳ lạ. 🌸</p>
+        </div>
+      </div>
 
-  <div class="faq-list">
+      <div class="story-card">
+        <span class="story-icon">🦋</span>
+        <h3>Cánh bướm lạ ghé thăm</h3>
+        <p>Môt chú bướm với màu sắc đặc biệt nhẹ nhàng bay vào không gian tang lễ, đậu yên thật lâu trên bàn thờ hoặc trên tay người thân yêu.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Trong văn hóa Á Đông, loài bướm được coi là sứ giả truyền tải thông điệp của linh hồn. Cánh bướm lượn quanh như một lời chào an ủi: "Mọi người ở lại hãy bình an, tôi đã tìm thấy sự tự do." 🍃</p>
+        </div>
+      </div>
 
-```
-<div class="faq-item">
-  <div class="faq-q" onclick="toggleFAQ(this)">
-    <span>Hoả thiêu có đau không? Người quá cố có cảm nhận được gì không?</span>
-    <span class="faq-toggle">+</span>
-  </div>
-  <div class="faq-a">
-    <div class="faq-a-inner">
-      Theo y học, khi tim ngừng đập, não ngừng hoạt động, hệ thần kinh hoàn toàn không còn khả năng
-      cảm nhận. Hoả thiêu chỉ diễn ra sau khi đã xác nhận tử vong, nên người đã mất không có bất kỳ
-      cảm giác nào. Về mặt tâm linh, nhiều truyền thống tin rằng linh hồn đã thoát khỏi thể xác
-      trước khi lửa bắt đầu, nên không có sự đau đớn nào xảy ra với "người" đó.
+      <div class="story-card">
+        <span class="story-icon">💭</span>
+        <h3>Giấc mơ báo hiệu an lành</h3>
+        <p>Người thân trong gia đình hay mơ thấy người đã mất xuất hiện trong diện mạo tươi trẻ, mỉm cười thanh thản và cất lời chào tạm biệt đầy yêu thương.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Hiện tượng này thường xảy ra vào các cột mốc 7 ngày, 21 ngày hay 49 ngày. Tâm lý học gọi đây là "Grief Dreams" (Giấc mơ chữa lành), giúp người sống vơi đi nỗi đau và vững tin rằng người thân đã đến bến bờ an lạc. ✨</p>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <span class="story-icon">🌡️</span>
+        <h3>Nhiệt độ thay đổi kỳ diệu</h3>
+        <p>Đột ngột cảm nhận một luồng hơi ấm dịu dàng hoặc cảm giác mát lành bao phủ lấy cơ thể trong lúc thực hiện các nghi lễ đưa tiễn.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Về khía cạnh cảm xúc và tâm linh, hiện tượng này đại diện cho cái ôm ấm áp và lời vỗ xoa dịu nhẹ của người đã khuất dành tặng cho gia quyến trước lúc chia xa. 🤝</p>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <span class="story-icon">🕊️</span>
+        <h3>Chim trời dừng chân không bay</h3>
+        <p>Những chú chim sẻ, chim câu hay chim hót đáp xuống trước hiên nhà đúng ngày tiễn đưa, yên lặng ngắm nhìn gia đình suốt nhiều giờ đồng hồ.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Chim chóc tượng trưng cho tự do và sự kết nối giữa bầu trời với đất mẹ. Người dân thường giữ không gian yên tĩnh, thì thầm tâm sự như thể đang trò chuyện trực tiếp cùng người thân yêu. 🌿</p>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <span class="story-icon">🔮</span>
+        <h3>Kỷ vật ngưng đọng thời gian</h3>
+        <p>Chiếc đồng hồ đeo tay dừng lại đúng khoảnh khắc người thân trút hơi thở cuối cùng, hoặc những vật dụng quen thuộc khẽ dịch chuyển nhẹ nhàng.</p>
+        <span class="expand-btn" onclick="toggleDetail(this)">Đọc thêm ↓</span>
+        <div class="story-detail">
+          <p>Những sự trùng hợp này được coi như dấu ấn nhắc nhớ kỷ niệm, tạo nên nhịp cầu tinh thần giúp gia đình luôn nhớ về những khoảng thời gian đẹp đẽ đã cùng nhau trải qua. ⏳</p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- BELIEFS -->
+  <section id="tin-nguong">
+    <p class="section-label">☸️ Tín ngưỡng & Triết lý</p>
+    <h2 class="section-title">Hỏa thiêu trong các <em>góc nhìn tôn giáo</em></h2>
+    <p class="section-intro">
+      Mỗi góc nhìn tâm linh và tôn giáo mang một cách giải thích riêng, nhưng tất cả đều chung một ước nguyện: hướng linh hồn về sự thong dong và siêu thoát. 🌈
+    </p>
+
+    <div class="beliefs-grid">
+      <div class="belief-item">
+        <span class="b-icon">☸️</span>
+        <h4>Phật giáo</h4>
+        <p>Hỏa thiêu thể hiện sâu sắc triết lý Vô thường. Thân xác chỉ là "túi da" tạm bợ. Ngọn lửa trả thi hài về với Tứ đại (Đất, Nước, Gió, Lửa), mở đường cho thần thức siêu thoát.</p>
+      </div>
+      <div class="belief-item">
+        <span class="b-icon">🏮</span>
+        <h4>Dân gian Việt Nam</h4>
+        <p>"Trở về với đất mẹ, hòa cùng mây trời." Tro cốt gửi lại tự nhiên, linh hồn che chở phù hộ con cháu. Sự tri ân tổ tiên là sợi dây liên kết trường tồn qua nhiều thế hệ.</p>
+      </div>
+      <div class="belief-item">
+        <span class="b-icon">🕉️</span>
+        <h4>Ấn Độ giáo (Hinduism)</h4>
+        <p>Hỏa thiêu là nghi thức thanh tẩy cao quý. Thần Lửa Agni đóng vai trò cầu nối đưa linh hồn vươn tới cõi vĩnh hằng. Tro cốt thường được trải xuống dòng sông Hằng thiêng liêng.</p>
+      </div>
+      <div class="belief-item">
+        <span class="b-icon">✝️</span>
+        <h4>Công giáo</h4>
+        <p>Giáo hội công nhận hỏa táng với sự tôn trọng sâu sắc. Tro cốt được lưu giữ trang trọng tại nghĩa trang hoặc nhà nguyện, thể hiện niềm tin vào sự sống lại trong Chúa.</p>
+      </div>
+      <div class="belief-item">
+        <span class="b-icon">🌿</span>
+        <h4>Góc nhìn Hiện đại</h4>
+        <p>Hỏa thiêu là lựa chọn văn minh, bảo vệ không gian sống và văn hóa xanh. Rải tro cốt xuống rừng cây, biển cả là cách nhân văn để hòa quyện vào thiên nhiên bao la.</p>
+      </div>
+      <div class="belief-item">
+        <span class="b-icon">☯️</span>
+        <h4>Đạo gia (Táo Đạo)</h4>
+        <p>Lửa biểu tượng cho sự chuyển hóa Ngũ hành. Con người sinh ra từ tự nhiên và trở về với Đạo. Hỏa thiêu giúp hoàn thành một chu trình vận hành hoàn hảo của vũ trụ.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <p class="section-label">❓ Hỏi & Đáp</p>
+    <h2 class="section-title">Những thắc mắc <em>thường gặp</em></h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>🔥 Hỏa thiêu có gây đau đớn không? Cảm giác của người quá cố thế nào?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Dưới góc độ y học, khi nhịp tim và não bộ ngưng hoạt động, toàn bộ hệ thần kinh đã dừng vận hành hoàn toàn, do đó không hề có cảm giác đau đớn. Về mặt tâm linh, linh hồn đã rời khỏi thể xác trước đó để trở về trạng thái nhẹ nhàng, không còn chịu ảnh hưởng bởi yếu tố vật lý. 🕊️
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>🏺 Nên xử lý tro cốt như thế nào là tốt nhất? (Gửi chùa, lưu tại gia hay rải biển?)</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Điều quan trọng nhất là tấm lòng thành và việc thực hiện theo nguyện vọng lúc còn sống của người quá cố. Bạn có thể gửi hũ cốt vào chùa/nhà thờ để được lắng nghe kinh kệ, hoặc chọn hình thức rải tro ra sông biển để trả về với thiên nhiên phóng khoáng. 🌊
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>📿 Ý nghĩa của nghi thức cúng 49 ngày và 100 ngày?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            49 ngày là khoảng thời gian "Thân trung ấm" chuyển tiếp linh hồn. Việc cúng niệm, làm việc thiện lành, phát tâm cúng sàng trong thời gian này giúp tích tập năng lượng an lành hỗ trợ hương linh tái sinh vào cõi tốt đẹp. 100 ngày đánh dấu sự an định trọn vẹn ở hành trình mới. 🙏
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>🌸 Những nét văn hóa kiêng kỵ cần chú ý trong tang lễ?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Giữ sự trang nghiêm trong trang phục và lời ăn tiếng nói, tránh khóc lóc quá bi lụy gây níu giữ hương linh. Sự nhẹ nhàng, thành kính và yêu thương chính là món quà tốt đẹp nhất tiễn đưa người thân yêu. ✨
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="f-flame">🕯️</span>
+    <p>
+      <strong>Vĩnh Hằng</strong> — Đồng hành cùng hành trình tĩnh lặng & an nhiên 🌿<br/>
+      Nội dung mang giá trị tham khảo tâm linh, văn hóa và triết lý nhân sinh.<br/>
+      Trân trọng và hòa hợp với tín ngưỡng của mỗi gia đình.
+    </p>
+  </footer>
+
 </div>
 
-<div class="faq-item">
-  <div class="faq-q" onclick="toggleFAQ(this)">
-    <span>Tro cốt sau hoả thiêu nên làm gì? Gửi chùa, giữ tại nhà hay rải ra thiên nhiên?</span>
-    <span class="faq-toggle">+</span>
-  </div>
-  <div class="faq-a">
-    <div class="faq-a-inner">
-      Không có câu trả lời đúng sai — điều quan trọng nhất là tôn trọng nguyện vọng của người quá cố
-      và sự thoải mái của gia đình. Gửi chùa giúp tro cốt được thờ phụng, tụng kinh thường xuyên.
-      Giữ tại nhà giữ người thân ở gần. Rải tro ra biển, sông, rừng — theo nghĩa "trả lại cho
-      thiên nhiên" — ngày càng phổ biến. Một số gia đình chia tro cốt thành nhiều phần để mỗi
-      người con giữ một phần.
-    </div>
-  </div>
-</div>
+<!-- FIREBASE SDKs (v10.x Modular Version) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    signOut, 
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-<div class="faq-item">
-  <div class="faq-q" onclick="toggleFAQ(this)">
-    <span>Tại sao phải cúng 49 ngày và 100 ngày sau khi mất?</span>
-    <span class="faq-toggle">+</span>
-  </div>
-  <div class="faq-a">
-    <div class="faq-a-inner">
-      Theo Phật giáo, 49 ngày là thời gian linh hồn trải qua "thân trung ấm" — giai đoạn chuyển tiếp
-      giữa kiếp này và kiếp sau. Trong 49 ngày, mỗi 7 ngày linh hồn trải qua một "cuộc phán xử".
-      Gia đình tụng kinh, phóng sinh, bố thí để tích thêm phúc đức giúp người mất được đầu thai
-      tốt hơn. 100 ngày đánh dấu việc linh hồn đã hoàn toàn định vị ở cõi khác. Trong dân gian
-      Việt, 49 ngày và 100 ngày cũng là thời gian gia đình chính thức bớt kiêng cữ.
-    </div>
-  </div>
-</div>
+  // Thông tin cấu hình Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAj1c-6VbwPdu22Ug5A7ygzCuxUk0zA-7E",
+    authDomain: "home-521c1.firebaseapp.com",
+    databaseURL: "https://home-521c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "home-521c1",
+    storageBucket: "home-521c1.firebasestorage.app",
+    messagingSenderId: "451194987727",
+    appId: "1:451194987727:web:74e6a81cdabb3b369943ba"
+  };
 
-<div class="faq-item">
-  <div class="faq-q" onclick="toggleFAQ(this)">
-    <span>Những điều kiêng kỵ cần tránh trong và sau tang lễ là gì?</span>
-    <span class="faq-toggle">+</span>
-  </div>
-  <div class="faq-a">
-    <div class="faq-a-inner">
-      Theo truyền thống: không mặc quần áo màu sặc sỡ trong 49 ngày; không tham dự đám cưới hoặc
-      sự kiện vui vẻ; phụ nữ có thai không nên vào nhà tang lễ; không đưa tang về nhà nếu nhà
-      có trẻ sơ sinh; không để gương trong phòng người mất; không khóc quá nhiều vì sẽ "kéo" linh
-      hồn không siêu thoát được. Nhiều kiêng kỵ này có nguồn gốc từ quan niệm bảo vệ người sống
-      khỏi "âm khí" và giúp người chết siêu thoát.
-    </div>
-  </div>
-</div>
+  // Khởi tạo Firebase App & Auth
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-<div class="faq-item">
-  <div class="faq-q" onclick="toggleFAQ(this)">
-    <span>Linh hồn có thực sự tồn tại sau khi chết? Khoa học nói gì?</span>
-    <span class="faq-toggle">+</span>
-  </div>
-  <div class="faq-a">
-    <div class="faq-a-inner">
-      Khoa học chưa có bằng chứng xác nhận sự tồn tại của linh hồn, nhưng cũng chưa thể phủ nhận
-      hoàn toàn. Các nghiên cứu về "near-death experiences" (trải nghiệm cận tử) ghi nhận hàng triệu
-      người kể lại hành trình "ra khỏi thể xác", thấy ánh sáng trắng, gặp người thân đã mất.
-      Tiến sĩ Raymond Moody và nhiều nhà khoa học đã nghiên cứu nghiêm túc hiện tượng này.
-      Dù lý giải như thế nào, những trải nghiệm này mang lại sự an ủi thực sự cho nhiều người.
-    </div>
-  </div>
-</div>
-```
+  // DOM elements
+  const loginBtn = document.getElementById('btn-login');
+  const logoutBtn = document.getElementById('btn-logout');
+  const authOverlay = document.getElementById('auth-overlay');
+  const mainContent = document.getElementById('main-content');
+  const userPhoto = document.getElementById('user-photo');
 
-  </div>
-</section>
+  // Đăng nhập với Google Popup
+  loginBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider).catch((error) => {
+      console.error("Lỗi đăng nhập:", error);
+      alert("Đăng nhập thất bại: " + error.message);
+    });
+  });
 
-<!-- FOOTER -->
+  // Đăng xuất
+  logoutBtn.addEventListener('click', () => {
+    signOut(auth);
+  });
 
-<footer>
-  <span class="f-flame">🕯</span>
-  <p>
-    <strong>Vĩnh Hằng</strong> — Đồng hành cùng hành trình về cõi tĩnh lặng<br/>
-    Mọi thông tin mang tính tham khảo tâm linh và văn hóa dân gian.<br/>
-    Hãy tôn trọng tín ngưỡng của mỗi gia đình trong giai đoạn đau thương.
-  </p>
-</footer>
+  // Theo dõi trạng thái đăng nhập
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Đã đăng nhập: ẩn màn hình đăng nhập, hiện nội dung web
+      authOverlay.style.display = 'none';
+      mainContent.style.display = 'block';
+      userPhoto.src = user.photoURL || 'https://via.placeholder.com/32';
+      userPhoto.title = user.displayName;
+    } else {
+      // Chưa đăng nhập: hiện màn hình chờ đăng nhập
+      authOverlay.style.display = 'flex';
+      mainContent.style.display = 'none';
+    }
+  });
+</script>
 
 <script>
   // ── SMOKE PARTICLES ──
